@@ -11,18 +11,29 @@ def twoLetter(str)
   end
 end
 
-# 日付を確定
+ARGV.each_with_index do |arg, i|
+  puts "ARGV[#{i}]：#{arg}"
+end
+
 disp_day = Date.today
 disp_month = disp_day.month
 disp_year = disp_day.year
 
+# -m だったら
+if idx = ARGV.index("-m")
+  disp_month = ARGV[idx + 1].to_i
+end
+p disp_month
+
+
+# 初期化
 weeks = []
 weeks << (" " * 5) + twoLetter(disp_month.to_s) + "月 " + disp_year.to_s + (" " * 9)
 weeks << "日 月 火 水 木 金 土  "
 
 # その月の1日の曜日
 write_day = Date.new(disp_year, disp_month, 1)
-start_cw = write_day.cwday
+p start_cw = write_day.cwday
 
 # 7日ずつ文字列の配列を作る
 start_flg = false
@@ -30,14 +41,13 @@ while write_day.month == disp_month do
   write_week = ""
   7.times do |n|
     next if write_day.month != disp_month
-    n -= 1
-    n = 7 if n < 0
+    n = 7 if n == 0
     if start_cw != n && !start_flg
       write_week += " " * 2
-      start_flg = true
     else
       write_week += twoLetter(write_day.day.to_s)
       write_day += 1
+      start_flg = true
     end
     write_week += " "
   end
@@ -45,6 +55,5 @@ while write_day.month == disp_month do
 end
 
 # 配列を表示
-# weeks << "                1  2  "
 weeks.each { |e| puts e }
 
