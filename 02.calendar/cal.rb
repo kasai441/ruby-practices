@@ -32,8 +32,14 @@ weeks << (" " * 5) + twoLetter(disp_month.to_s) + "月 " + disp_year.to_s + (" "
 weeks << "日 月 火 水 木 金 土  "
 
 # その月の1日の曜日
-write_day = Date.new(disp_year, disp_month, 1)
-p start_cw = write_day.cwday
+begin
+	write_day = Date.new(disp_year, disp_month, 1)
+rescue => e
+	p e
+	p "不正な日付の指定です"
+	return
+end
+start_cw = write_day.cwday
 
 # 7日ずつ文字列の配列を作る
 start_flg = false
