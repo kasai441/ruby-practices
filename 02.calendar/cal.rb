@@ -19,13 +19,33 @@ disp_day = Date.today
 disp_month = disp_day.month
 disp_year = disp_day.year
 
+options = { m: "-m", y: "-y" }
+
+begin
+  ARGV.each_with_index do |e, idx|
+		unless options.values.include?(e)
+		  # オプション以外の引数が最初に与えられた場合
+    	if idx == 0
+				raise StandardError.new('first argument must be any option')
+			# オプション以外の引数が２つ続いている場合
+			elsif !options.values.include?(ARGV[idx - 1])
+				raise StandardError.new('the argument other than option must not be nest to another') 
+			end		
+		end
+	end
+rescue => e
+  p "不正な引数です"
+  p e
+  return
+end
+
 # -m だったら
-if idx = ARGV.index("-m")
+if idx = ARGV.index(options[:m])
   disp_month = ARGV[idx + 1].to_i
 end
 
 # -y だったら
-if idx = ARGV.index("-y")
+if idx = ARGV.index(options[:y])
   disp_year = ARGV[idx + 1].to_i
 end
 
