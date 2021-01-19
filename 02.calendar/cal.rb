@@ -23,8 +23,11 @@ disp_year = disp_day.year
 if idx = ARGV.index("-m")
   disp_month = ARGV[idx + 1].to_i
 end
-p disp_month
 
+# -y だったら
+if idx = ARGV.index("-y")
+  disp_year = ARGV[idx + 1].to_i
+end
 
 # 初期化
 weeks = []
@@ -35,8 +38,8 @@ weeks << "日 月 火 水 木 金 土  "
 begin
 	write_day = Date.new(disp_year, disp_month, 1)
 rescue => e
-	p e
 	p "不正な日付の指定です"
+	p e
 	return
 end
 start_cw = write_day.cwday
