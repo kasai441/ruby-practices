@@ -16,9 +16,10 @@ ARGV.each_with_index do |arg, i|
   puts "ARGV[#{i}]：#{arg}"
 end
 
-thatdate = Date.today
-disp_month = thatdate.month
-disp_year = thatdate.year
+thatday = Date.today
+disp_month = thatday.month
+disp_year = thatday.year
+disp_day = thatday.day
 
 options = { m: "-m", y: "-y" }
 
@@ -43,11 +44,13 @@ end
 # -m だったら
 if idx = ARGV.index(options[:m])
   disp_month = ARGV[idx + 1].to_i
+	thatday = nil
 end
 
 # -y だったら
 if idx = ARGV.index(options[:y])
   disp_year = ARGV[idx + 1].to_i
+	thatday = nil
 end
 
 # 初期化
@@ -75,12 +78,12 @@ while write_date.month == disp_month do
     if start_cw != n && !start_flg
       write_week += " " * 2
     else
-			write_day = twoLetter(write_date.day)
+			write_day = write_date.day
 			# 今日の場合、着色
-	    if write_date == thatdate 
-				write_day = "\e[30m\e[47m" + write_day + "\e[0m"	
+	    if write_day == disp_day
+				write_day = "\e[30m\e[47m" + twoLetter(write_day) + "\e[0m"	
 			end
-      write_week += write_day
+      write_week += twoLetter(write_day)
       write_date += 1
       start_flg = true
     end
