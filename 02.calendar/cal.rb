@@ -15,8 +15,10 @@ end
 thatdate = Date.today
 disp_month = thatdate.month
 disp_year = thatdate.year
+disp_highlight = true
 
-options = { m: "-m", y: "-y" }
+options = { m: "-m", y: "-y", h: "-h" }
+single_options = ["-h"]
 
 # 引数の例外処理
 begin
@@ -25,8 +27,8 @@ begin
 		  # オプション以外の引数が最初に与えられた場合
     	if idx == 0
 				raise StandardError.new('最初の引数はオプションにしてください　オプション： ' + options.values.to_s)
-			# オプション以外の引数が２つ続いている場合
-			elsif !options.values.include?(ARGV[idx - 1])
+			# オプション以外の引数がオプション指定のものでない場合
+			elsif !(options.values - single_options).include?(ARGV[idx - 1])
 				raise StandardError.new('オプション以外の引数を指定しないでください　オプション：' + options.values.to_s) 
 			end		
 		end
@@ -45,6 +47,11 @@ end
 # -y だったら
 if idx = ARGV.index(options[:y])
   disp_year = ARGV[idx + 1].to_i
+end
+
+# -h だったら
+if idx = ARGV.index(options[:h])
+  disp_highlight = false 
 end
 
 # 初期化
@@ -73,7 +80,7 @@ while write_date.month == disp_month do
     else
 			write_day = twoLetter(write_date.day)
 			# 今日の場合、着色
-	    if write_date == thatdate 
+	    if write_date == thatdate && disp_highlight 
 				write_day = "\e[7m" + write_day + "\e[0m"	
 			end
       write_week += write_day
