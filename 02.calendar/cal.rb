@@ -12,25 +12,22 @@ def twoLetter(str)
   end
 end
 
-ARGV.each_with_index do |arg, i|
-  puts "ARGV[#{i}]：#{arg}"
-end
-
 thatdate = Date.today
 disp_month = thatdate.month
 disp_year = thatdate.year
 
 options = { m: "-m", y: "-y" }
 
+# 引数の例外処理
 begin
   ARGV.each_with_index do |e, idx|
 		unless options.values.include?(e)
 		  # オプション以外の引数が最初に与えられた場合
     	if idx == 0
-				raise StandardError.new('first argument must be an option')
+				raise StandardError.new('最初の引数はオプションにしてください　オプション： ' + options.values.to_s)
 			# オプション以外の引数が２つ続いている場合
 			elsif !options.values.include?(ARGV[idx - 1])
-				raise StandardError.new('the argument other than option must not be next to another') 
+				raise StandardError.new('オプション以外の引数を指定しないでください　オプション：' + options.values.to_s) 
 			end		
 		end
 	end
@@ -70,15 +67,14 @@ start_flg = false
 while write_date.month == disp_month do
   write_week = ""
   7.times do |n|
-    next if write_date.month != disp_month
     n = 7 if n == 0
-    if start_cw != n && !start_flg
+    if write_date.month != disp_month || (start_cw != n && !start_flg)
       write_week += " " * 2
     else
 			write_day = twoLetter(write_date.day)
 			# 今日の場合、着色
 	    if write_date == thatdate 
-				write_day = "\e[30m\e[47m" + write_day + "\e[0m"	
+				write_day = "\e[7m" + write_day + "\e[0m"	
 			end
       write_week += write_day
       write_date += 1
