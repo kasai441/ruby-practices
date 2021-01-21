@@ -1,0 +1,12 @@
+CC = "gcc"
+
+task :default => "omikuji"
+
+file "omikuji" => "omikuji.o" do
+  sh "#{CC} -o omikuji omikuji.o"
+end
+
+file "omikuji.o" => "omikuji.c" do
+  sh "#{CC} -c omikuji.c"
+end
+
