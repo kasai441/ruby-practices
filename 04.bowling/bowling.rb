@@ -1,22 +1,24 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-class Throw < Struct.new(:id, :frame, :score, :bonus_count, :bonus)
+class Throwing < Struct.new(:id, :frame, :score, :bonus_count, :bonus, :strike, :spare)
   def update
     self.score = 10 if self.score == "X"
     self.score = self.score.to_i
   end
 
-  def next_frame(previous, pre_previous)
+  def previous_frame(previous)
     self.frame = previous.frame
-    if (!pre_previous.nil? && previous.frame == pre_previous.frame) || previous.score == 10
-      self.frame += 1
-    end
+  end
+
+  def forward_frame
+    self.frame += 1
   end
 
   def spare?(previous)
+    # p [previous, self]
     # raise '1投と2投の合計が10以上です'
-    !self.frame.zero? && self.score + previous.score == 10
+    self.score + previous.score == 10
   end
 
   def provide_bonus_count
@@ -40,36 +42,48 @@ def main
   # パラメータ例外処理
   p scoreList
   # 空のフレーム作成
-  throws = []
+  throwings = []
   scoreList.each_with_index do |score, idx|
-    throws << Throw.new(idx, 0, score, 0, 0)
-    # p throws[idx]
+    throwings << Throwing.new(idx, 0, score, 0, 0, false, false)
+    # p throwings[idx]
   end
-  throws.each do |throw|
-    if ("0".."9").include?(throw.score)
-      throw.update
-      if throw.id >= 2
-        throw.next_frame(throws[throw.id - 1], throws[throw.id - 2])
+  throwings.each do |throwing|
+    back_1 = throwings[throwing.id - 1]
+    back_2 = throwings[throwing.id - 2]
+    next_1 = throwings[throwing.id + 1]
+    next_2 = throwings[throwing.id + 2]
+
+    throwing.previous_frame(back_1)
+    # ストライク
+    if "X" == throwing.score
+      if throwing.id > 0 && back_1.score != 0
+        throwing.strike = true
       end
-      if (throw.spare?(throws[throw.id - 1])) && throw.frame < 9
-        throws[throw.id + 1].provide_bonus_count
+      throwing.update
+      if (throwing.id >= 2 && back_1.frame == back_2.frame) || back_1.strike
+        throwing.forward_frame
       end
-    elsif "X" == throw.score
-      throw.update
-      if throw.id >= 1
-        throw.next_frame(throws[throw.id - 1], nil)
+      if throwing.frame < 9
+        next_1.provide_bonus_count
+        next_2.provide_bonus_count
       end
-      if throw.frame < 9
-        throws[throw.id + 1].provide_bonus_count
-        throws[throw.id + 2].provide_bonus_count
+    elsif ("0".."9").include?(throwing.score) || "X" == throwing.score
+      throwing.update
+      if (throwing.id >= 2 && back_1.frame == back_2.frame) || back_1.strike
+          throwing.forward_frame
+      end
+      # スペア
+      if (throwing.id > 0 && throwing.spare?(back_1)) && throwing.frame < 9
+        throwing.spare = true
+        next_1.provide_bonus_count
       end
     else
       # raise 
     end
-    throw.apply_bonus#(throws[throw.id - 1]) if throw.id > 0
+    throwing.apply_bonus#(back_1) if throwing.id > 0
   end
-  throws.each { |e| puts e }
-  throws.map { |e| e.score + e.bonus }.inject(:+)
+  throwings.each { |e| puts e }
+  throwings.map { |e| e.score + e.bonus }.inject(:+)
 end
 
 puts main
