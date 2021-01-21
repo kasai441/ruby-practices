@@ -1,3 +1,5 @@
+// https://saeki-ce.xsrv.jp/C_src/omikuji11.html
+// 出典：佐伯英子技術士事務所
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
