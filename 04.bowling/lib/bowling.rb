@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-class Roll < Struct.new(:id, :frame, :score, :bonus_count, :bonus, :feature)
+class Roll < Struct.new(:id, :frame, :score, :bonus, :feature)
+# class Roll < Struct.new(:id, :frame, :score, :bonus_count, :bonus, :feature)
 
   def keep_frame(bf)
     self.frame = bf.frame
@@ -33,23 +34,23 @@ class Roll < Struct.new(:id, :frame, :score, :bonus_count, :bonus, :feature)
   # ボーナスを先のスローに提供する
   def mark_strike(aft, aft2)
     self.feature = :strike
-    aft.provide_bonus_count
-    aft2.provide_bonus_count
+    self.bonus += aft.score
+    self.bonus += aft2.score
   end
 
   def mark_spare(aft)
     self.feature = :spare
-    aft.provide_bonus_count
+    self.bonus += aft.score
   end
 
-  def provide_bonus_count
-    self.bonus_count += 1
-  end
+  # def provide_bonus_count
+  #   self.bonus_count += 1
+  # end
 
-  def apply_bonus
-    bonus = self.score * self.bonus_count
-    self.bonus += bonus
-  end
+  # def apply_bonus(aft, aft2)
+  #   self.bonus += aft.score
+  #   self.bonus += aft2.score
+  # end
 end
 
 def main(input)
@@ -60,7 +61,7 @@ def main(input)
   rolls = []
   scoreList.each_with_index do |score, idx|
     score = 10 if score == "X"
-    rolls << Roll.new(idx, 0, score.to_i, 0, 0, :none)
+    rolls << Roll.new(idx, 0, score.to_i, 0, :none)
     # p rolls[idx]
   end
   rolls.each do |roll|
@@ -85,7 +86,7 @@ def main(input)
     end
     
     # 提供されたボーナスを適用する
-    roll.apply_bonus
+    # roll.apply_bonus
   end
   rolls.each { |e| puts e }
   rolls.map { |e| e.score + e.bonus }.inject(:+)
