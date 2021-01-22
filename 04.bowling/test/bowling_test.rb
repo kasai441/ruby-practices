@@ -16,4 +16,3 @@ class BowlingTest < Minitest::Test
     assert_equal '引数エラー：数字と"X"以外の引数です', total_score(list_rolls('abc'))
   end
 end
-
