@@ -17,14 +17,14 @@ Roll = Struct.new(:id, :frame, :score, :bonus, :feature) do
 
   # ストライク判定：10点をとっていて、フレーム一投目かどうか、第10フレームではないか
   def strike?(bf1)
-    return unless score == 10
+    return false unless score == 10
 
     id.zero? || (id >= 1 && self.frame != bf1.frame && self.frame < 9)
   end
 
   # スペア判定：フレームの合計が10で、フレーム2投目かどうか、第10フレームではないか
   def spare?(bf1)
-    return unless score + bf1.score == 10
+    return false unless score + bf1.score == 10
 
     id.positive? && self.frame == bf1.frame && self.frame < 9
   end
@@ -76,7 +76,7 @@ def total_score(rolls)
       roll.mark_spare(aft1)
     end
   end
-  rolls.map { |e| e.score + e.bonus }.inject(:+)
+  rolls.map { |e| e.score + e.bonus }.sum
 end
 
 if ARGV.size.zero?
