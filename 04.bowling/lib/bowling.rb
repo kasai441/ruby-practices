@@ -26,7 +26,7 @@ Roll = Struct.new(:id, :frame, :score, :bonus, :feature) do
   def spare?(bf1)
     return unless score + bf1.score == 10
 
-    id > 0 && self.frame == bf1.frame && self.frame < 9
+    id.positive? && self.frame == bf1.frame && self.frame < 9
   end
 
   # ストライクボーナスを先のスローから取得する
@@ -90,4 +90,3 @@ input = ARGV[0]
 rolls = list_rolls(input)
 
 puts total_score(rolls)
-
