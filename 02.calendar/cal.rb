@@ -67,7 +67,6 @@ rescue => e
   p e
   return
 end
-start_cw = write_date.cwday
 
 def write_blank_day(num)
   str = ''
@@ -75,9 +74,8 @@ def write_blank_day(num)
   str += ' ' * num * day_space
 end
 
-cw = start_cw
 # 最初の日までの空白
-write_week += write_blank_day(cw)
+write_week += write_blank_day(write_date.cwday)
 
 # 月が変わるまで日付を加える
 while write_date.month == disp_month do
@@ -90,14 +88,12 @@ while write_date.month == disp_month do
   write_date += 1
   
   # 週の折り返し
-  cw += 1
-  if cw == 7
-    cw = 0
+  if write_date.cwday == 7
     write_week += " \n"
   end
 end
 
 # 最後の日から行が終わるまでの空白
-write_week += write_blank_day(7 - cw) + ' ' 
+write_week += write_blank_day(7 - write_date.cwday) + ' ' 
 
 puts write_week
