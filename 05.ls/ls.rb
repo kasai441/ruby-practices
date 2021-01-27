@@ -1,19 +1,22 @@
 path = ARGV[0]
 p path
-path = "#{Dir.home}" if path.nil?
 items = []
 files = []
 row = []
 
-Dir.open(path) do |d|
-  d.children.each do |item|
-    items << item
-  end
+# Dir.open(path || '.') do |d|
+#   d.children.each do |item|
+#     items << item
+#   end
+# end
+
+Dir.foreach(path || '.') do |d|
+  items << d
 end
 
-puts 'items'
-p items.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
-puts 
+# puts 'items'
+# p items.sort.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
+# puts 
 
 def cols_to_rows(cols)
   rows = []
@@ -53,27 +56,27 @@ def divide_to_cols(files)
       cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
       cols_size.times { cols << sliced.slice!(0, n) }
       cols = sizeup_to_max(cols)
-      puts "n:#{n}"
-      p cols
-      puts
+#       puts "n:#{n}"
+#       p cols
+#       puts
     end
   end
   cols
 end
 
-files = items.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
+files = items.sort.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
 
 cols = divide_to_cols(files)
 
-puts 'cols'
-p cols
-puts
-
+# puts 'cols'
+# p cols
+# puts
+# 
 rows = cols_to_rows(cols)
-
-puts 'rows'
-p rows
-puts
+# 
+# puts 'rows'
+# p rows
+# puts
 
 # p files.map { |e| e.size }.sum
 rows.each { |e| puts e.join('  ') }
