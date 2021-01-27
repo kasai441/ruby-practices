@@ -35,6 +35,15 @@ def within_width?(rows)
   true
 end
 
+def sizeup_to_max(cols)
+  result = []
+  cols.map do |col|
+    max = col.map { |c| c.size }.max
+    result << col.map { |c| c + ' ' * (max - c.size) }
+  end
+  result
+end
+
 def divide_to_cols(files)
   cols = files.map { |e| [e] }
   (2..files.size).each do |n|
@@ -43,6 +52,7 @@ def divide_to_cols(files)
       cols.clear
       cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
       cols_size.times { cols << sliced.slice!(0, n) }
+      cols = sizeup_to_max(cols)
       puts "n:#{n}"
       p cols
       puts
