@@ -24,6 +24,7 @@ end
 
 def file_name(items, a, r)
   files = items.sort.sort { |a, b| a.gsub(/\./, '').downcase <=> b.gsub(/\./, '').downcase }
+  files.delete_if { |f| f.match?(/^\..*/) } if !a
   files.reverse! if r  
   cols = divide_to_cols(files)
   rows = cols_to_rows(cols)
