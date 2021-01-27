@@ -18,14 +18,27 @@ def run_app
   Dir.foreach(path || '.') do |d|
     items << d
   end
-
-  file_name(items, a, r) 
+  
+  files = apply_order_option(items, a, r)
+  l ? list_detail(files) : list_name(files) 
 end
 
-def file_name(items, a, r)
+def apply_order_option(items, a, r)
   files = items.sort.sort { |a, b| a.gsub(/\./, '').downcase <=> b.gsub(/\./, '').downcase }
   files.delete_if { |f| f.match?(/^\..*/) } if !a
   files.reverse! if r  
+  files
+end
+ 
+def list_detail(files)
+  stat = File.stat("/home/kasai441/.b*")
+  puts stat.dev
+  puts stat.size
+  puts "0%o" % stat.mode
+  puts stat.mode
+end
+
+def list_name(files)
   cols = divide_to_cols(files)
   rows = cols_to_rows(cols)
   rows.each { |e| puts e.join('  ') }
@@ -75,11 +88,3 @@ def sizeup_to_max(cols)
 end
 
 run_app
-
-def stat
-  stat = File.stat("/home/kasai441/.b*")
-  puts stat.dev
-  puts stat.size
-  puts "0%o" % stat.mode
-  puts stat.mode
-end
