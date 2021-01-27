@@ -38,8 +38,7 @@ def list_detail(path, files)
   files.each do |f|
     datum = []
     stat = File.stat(path + f)
-    mode = "0%o" % stat.mode
-    datum << mode
+    datum << to_char_ftype(stat.ftype) + to_char_mode(stat.mode)
     datum << stat.uid
     datum << stat.uid
     datum << stat.size
@@ -51,6 +50,38 @@ def list_detail(path, files)
   end
   puts "total #{blocks}"
   puts data
+end
+
+def to_char_ftype(ftype)
+  {
+    "file": "-",
+    "directory": "d",
+    "characterSpecial": "c",
+    "blockSpecial": "b",
+    "fifo": "p",
+    "link": "l",
+    "socket": "s",
+    "unknown": "?"
+  }[ftype.to_sym]
+end
+
+def to_char_mode(mode)
+  mode = "0%o" % mode
+  mode = mode[-3, 3]
+  mode = mode.split('').map { |m| which_mode(m) }.join
+end
+
+def which_mode(m)
+  {
+    "0": "---",
+    "1": "--x",
+    "2": "-w-",
+    "3": "-wx",
+    "4": "r--",
+    "5": "r-x",
+    "6": "rw-",
+    "7": "rwx"
+  }[m.to_sym]
 end
 
 def list_name(files)
