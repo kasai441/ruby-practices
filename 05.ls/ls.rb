@@ -20,7 +20,7 @@ def run_app
   end
   
   files = apply_order_option(items, a, r)
-  l ? list_detail(files) : list_name(files) 
+  l ? list_detail(path, files) : list_name(files) 
 end
 
 def apply_order_option(items, a, r)
@@ -30,12 +30,27 @@ def apply_order_option(items, a, r)
   files
 end
  
-def list_detail(files)
-  stat = File.stat("/home/kasai441/.b*")
-  puts stat.dev
-  puts stat.size
-  puts "0%o" % stat.mode
-  puts stat.mode
+def list_detail(path, files)
+  path = './' if !path
+  path += '/' if !path.match?(/.*\/$/)
+  data = []
+  blocks = 0
+  files.each do |f|
+    datum = []
+    stat = File.stat(path + f)
+    mode = "0%o" % stat.mode
+    datum << mode
+    datum << stat.uid
+    datum << stat.uid
+    datum << stat.size
+    datum << stat.mtime
+    datum << f
+    datum << stat.blocks
+    data << datum.join(' ')
+    blocks += stat.blocks
+  end
+  puts "total #{blocks}"
+  puts data
 end
 
 def list_name(files)
