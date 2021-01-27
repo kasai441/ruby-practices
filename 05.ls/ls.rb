@@ -1,24 +1,32 @@
-def run
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+
+def run_app
+  a = false
+  r = false
+  l = false
+  opt = OptionParser.new
+  opt.on('-a') { a = true }
+  opt.on('-r') { r = true }
+  opt.on('-l') { l = true }
+  opt.parse!(ARGV)
+
   path = ARGV[0]
-  p path
   items = []
-  # files = []
-  row = []
-  
   Dir.foreach(path || '.') do |d|
     items << d
   end
-  
-  file_name(items,0,0)
+
+  file_name(items, a, r) 
 end
 
 def file_name(items, a, r)
   files = items.sort.sort { |a, b| a.gsub(/\./, '').downcase <=> b.gsub(/\./, '').downcase }
-  
+  files.reverse! if r  
   cols = divide_to_cols(files)
-  
   rows = cols_to_rows(cols)
-  
   rows.each { |e| puts e.join('  ') }
 end
 
@@ -65,10 +73,12 @@ def sizeup_to_max(cols)
   result
 end
 
-run
+run_app
 
-stat = File.stat("/home/kasai441/#{items[0]}")
-puts stat.dev
-puts stat.size
-puts "0%o" % stat.mode
-puts stat.mode
+def stat
+  stat = File.stat("/home/kasai441/.b*")
+  puts stat.dev
+  puts stat.size
+  puts "0%o" % stat.mode
+  puts stat.mode
+end
