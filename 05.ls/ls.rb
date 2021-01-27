@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
 
 def run_app
   a = false
@@ -40,17 +41,21 @@ def list_detail(path, files)
     stat = File.stat(path + f)
     datum << to_char_ftype(stat.ftype) + to_char_mode(stat.mode)
     datum << stat.nlink
-    datum << stat.uid
-    datum << stat.uid
+    datum << Etc.getpwuid(stat.uid).name
+    datum << Etc.getgrgid(stat.uid).name
     datum << stat.size
-    datum << stat.mtime
+    datum << stat.mtime.strftime("%b %d %H:%M")
     datum << f
-    datum << stat.blocks
-    data << datum.join(' ')
+    #datum << stat.blocks
+    data << datum#.join(' ')
     blocks += stat.blocks
   end
+  cols = exchange_cols_rows(data)
+  cols = sizeup_to_max(cols)
+  data = exchange_cols_rows(cols)  
   puts "total #{blocks}"
-  puts data
+  # puts data
+  data.each { |d| puts d.join(' ') }
 end
 
 def to_char_ftype(ftype)
@@ -87,14 +92,14 @@ end
 
 def list_name(files)
   cols = divide_to_cols(files)
-  rows = cols_to_rows(cols)
+  rows = exchange_cols_rows(cols)
   rows.each { |e| puts e.join('  ') }
 end
 
 def divide_to_cols(files)
   cols = files.map { |e| [e] }
   (2..files.size).each do |n|
-    unless within_width?(cols_to_rows(cols))
+    unless within_width?(exchange_cols_rows(cols))
       sliced = files.dup
       cols.clear
       cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
@@ -105,16 +110,16 @@ def divide_to_cols(files)
   cols
 end
 
-def cols_to_rows(cols)
-  rows = []
-  cols[0].size.times { |n| rows[n] = [] }
+def exchange_cols_rows(items)
+  result = []
+  items[0].size.times { |n| result[n] = [] }
 
-  cols.each do |col|
+  items.each do |col|
     col.each_with_index do |file, row_idx|
-      rows[row_idx] << file
+      result[row_idx] << file
     end
   end
-  rows
+  result
 end
 
 def within_width?(rows)
@@ -128,8 +133,14 @@ end
 def sizeup_to_max(cols)
   result = []
   cols.map do |col|
-    max = col.map { |c| c.size }.max
-    result << col.map { |c| c + ' ' * (max - c.size) }
+    max = col.map { |c| c.to_s.size }.max
+    result << col.map do |c|
+      if c.is_a?(String)
+        c + ' ' * (max - c.size)
+      elsif c.is_a?(Integer)
+        ' ' * (max - c.to_s.size) + c.to_s
+      end
+    end
   end
   result
 end
