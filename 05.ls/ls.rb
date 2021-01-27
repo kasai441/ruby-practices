@@ -39,6 +39,7 @@ def list_detail(path, files)
     datum = []
     stat = File.stat(path + f)
     datum << to_char_ftype(stat.ftype) + to_char_mode(stat.mode)
+    datum << stat.nlink
     datum << stat.uid
     datum << stat.uid
     datum << stat.size
