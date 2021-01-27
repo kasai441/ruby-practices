@@ -1,22 +1,40 @@
-path = ARGV[0]
-p path
-items = []
-files = []
-row = []
-
-# Dir.open(path || '.') do |d|
-#   d.children.each do |item|
-#     items << item
-#   end
-# end
-
-Dir.foreach(path || '.') do |d|
-  items << d
+def run
+  path = ARGV[0]
+  p path
+  items = []
+  # files = []
+  row = []
+  
+  Dir.foreach(path || '.') do |d|
+    items << d
+  end
+  
+  file_name(items,0,0)
 end
 
-# puts 'items'
-# p items.sort.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
-# puts 
+def file_name(items, a, r)
+  files = items.sort.sort { |a, b| a.gsub(/\./, '').downcase <=> b.gsub(/\./, '').downcase }
+  
+  cols = divide_to_cols(files)
+  
+  rows = cols_to_rows(cols)
+  
+  rows.each { |e| puts e.join('  ') }
+end
+
+def divide_to_cols(files)
+  cols = files.map { |e| [e] }
+  (2..files.size).each do |n|
+    unless within_width?(cols_to_rows(cols))
+      sliced = files.dup
+      cols.clear
+      cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
+      cols_size.times { cols << sliced.slice!(0, n) }
+      cols = sizeup_to_max(cols)
+    end
+  end
+  cols
+end
 
 def cols_to_rows(cols)
   rows = []
@@ -47,43 +65,7 @@ def sizeup_to_max(cols)
   result
 end
 
-def divide_to_cols(files)
-  cols = files.map { |e| [e] }
-  (2..files.size).each do |n|
-    unless within_width?(cols_to_rows(cols))
-      sliced = files.dup
-      cols.clear
-      cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
-      cols_size.times { cols << sliced.slice!(0, n) }
-      cols = sizeup_to_max(cols)
-#       puts "n:#{n}"
-#       p cols
-#       puts
-    end
-  end
-  cols
-end
-
-files = items.sort.sort { |a, b| a.gsub(/\./, '') <=> b.gsub(/\./, '') }
-
-cols = divide_to_cols(files)
-
-# puts 'cols'
-# p cols
-# puts
-# 
-rows = cols_to_rows(cols)
-# 
-# puts 'rows'
-# p rows
-# puts
-
-# p files.map { |e| e.size }.sum
-rows.each { |e| puts e.join('  ') }
-#    printf("%1$s  ", item)
-#    row += "  #{item}" if item.size   
-print "\n"
-p `tput cols`.gsub(/\D/, '').to_i
+run
 
 stat = File.stat("/home/kasai441/#{items[0]}")
 puts stat.dev
