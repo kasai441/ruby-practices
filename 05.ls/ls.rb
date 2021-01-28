@@ -19,7 +19,6 @@ def run_app
   Dir.foreach(path || '.') do |d|
     items << d
   end
-  
   files = apply_order_option(items, a, r)
   l ? list_detail(path, files) : list_name(files) 
 end
@@ -38,24 +37,31 @@ def list_detail(path, files)
   blocks = 0
   files.each do |f|
     datum = []
-    stat = File.stat(path + f)
+    stat = get_stat(path, f)
     datum << to_char_ftype(stat.ftype) + to_char_mode(stat.mode)
     datum << stat.nlink
     datum << Etc.getpwuid(stat.uid).name
-    datum << Etc.getgrgid(stat.uid).name
+    datum << get_group_name(stat.uid)
     datum << stat.size
     datum << stat.mtime.strftime("%b %d %H:%M")
-    datum << f
-    #datum << stat.blocks
-    data << datum#.join(' ')
+    datum << (datum[0][0] == 'l' ? "#{f} -> #{File.readlink(path + f)}" : f)
+    data << datum
     blocks += stat.blocks
   end
-  cols = exchange_cols_rows(data)
+  cols = convert_cols_rows(data)
   cols = sizeup_to_max(cols)
-  data = exchange_cols_rows(cols)  
+  cols.last.map! { |c| c.strip }
+  data = convert_cols_rows(cols)  
   puts "total #{blocks}"
-  # puts data
   data.each { |d| puts d.join(' ') }
+end
+
+def get_stat(path, f)
+  begin
+    stat = File.stat(path + f)
+  rescue
+    stat = File.lstat(path + f)
+  end
 end
 
 def to_char_ftype(ftype)
@@ -90,16 +96,24 @@ def which_mode(m)
   }[m.to_sym]
 end
 
+def get_group_name(uid)
+  begin
+    Etc.getgrgid(uid).name
+  rescue
+    'staff'
+  end
+end
+
 def list_name(files)
   cols = divide_to_cols(files)
-  rows = exchange_cols_rows(cols)
+  rows = convert_cols_rows(cols)
   rows.each { |e| puts e.join('  ') }
 end
 
 def divide_to_cols(files)
   cols = files.map { |e| [e] }
   (2..files.size).each do |n|
-    unless within_width?(exchange_cols_rows(cols))
+    unless within_width?(convert_cols_rows(cols))
       sliced = files.dup
       cols.clear
       cols_size = files.size % n == 0 ? files.size / n : files.size / n + 1
@@ -110,7 +124,7 @@ def divide_to_cols(files)
   cols
 end
 
-def exchange_cols_rows(items)
+def convert_cols_rows(items)
   result = []
   items[0].size.times { |n| result[n] = [] }
 
