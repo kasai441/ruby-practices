@@ -19,7 +19,10 @@ def run_app
   Dir.foreach(path || '.') do |d|
     items << d
   end
+
   files = apply_order_option(items, a, r)
+  return if files.size.zero?
+
   l ? list_detail(path, files) : list_name(files)
 end
 
