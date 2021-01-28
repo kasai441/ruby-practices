@@ -57,7 +57,8 @@ def to_readable(path)
 end
 
 def get_stat(path, file)
-  # Mac/Ruby3.0.0 でFile.statにシンボリックリンクのパスを入れると例外となる(Debian10/Ruby2.7.1ではならない）その場合File.lstatにパスを入れる
+  # File.statにシンボリックリンクのパスを入れると例外となる
+  # その場合File.lstatにパスを入れる
   # File.lstatで例外となる場合異常終了とする
   File.stat(path + file)
 rescue SystemCallError
@@ -127,7 +128,7 @@ end
 def list_name(files)
   cols = divide_to_cols(files)
   rows = convert_cols_rows(cols)
-  # Debian10/bashでは各列を最大文字列でそろえ間隔は空白二つ分
+  # Debian10/bashでは間隔は空白二つ分
   rows.each { |e| puts e.join('  ') }
 end
 
