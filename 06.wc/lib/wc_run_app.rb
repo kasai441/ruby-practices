@@ -24,6 +24,9 @@ end
 
 def file_counts(pathnames, result, total, lines, words, bytes)
   file_paths = Dir.glob(pathnames).sort
+
+  result << { no_file: "wc: #{pathnames[0]}: open: No such file or directory" } if file_paths.size.zero?
+  
   file_paths.each do |file_path|
     text_data = {}
     if directory?(file_path)
@@ -59,6 +62,7 @@ end
 def align_data(text_data)
   aligned = ''
   return text_data[:directory] if text_data[:directory]
+  return text_data[:no_file] if text_data[:no_file]
   aligned += text_data[:lines] ? text_data[:lines].to_s.rjust(8) : ''
   aligned += text_data[:words] ? text_data[:words].to_s.rjust(8) : ''
   aligned += text_data[:bytes] ? text_data[:bytes].to_s.rjust(8) : ''

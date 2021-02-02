@@ -90,13 +90,4 @@ wc: test/fixtures/sample/q: read: Is a directory
     params = { lines: true, words: true, bytes: true }
     assert_equal expected, run_app(nil, input, **params)
   end
-
-  def test_stdin
-    test_input = <<~TEXT.chomp
-      first
-      second
-      third
-    TEXT
-    # assert_equal("3\n", output.lines[-1]) 
-  end
 end
