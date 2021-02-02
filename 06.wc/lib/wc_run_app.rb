@@ -4,48 +4,63 @@
 #require 'pathname'
 
 def run_app(pathnames, input_data, lines: false, words: false, bytes: false)
-  file_paths = Dir.glob(pathnames).sort if pathnames
-  file_list = []
-  total = { lines: 0, words: 0, bytes: 0, name: 'total' }
+  result = []
+  total = { name: 'total' }
+  total[:lines] = 0 if lines
+  total[:words] = 0 if words
+  total[:bytes] = 0 if bytes
 
-  file_paths.each do |file_path|
-    file_data = {}
-    if directory?(file_path)
-      file_data[:directory] = "wc: #{file_path}: read: Is a directory"
-      file_data[:lines] = 0 if lines
-      file_data[:words] = 0 if words
-      file_data[:bytes] = 0 if bytes
-    else
-      file = File.read(file_path)
-      file_data[:lines] = file.count("\n") if lines
-      file_data[:words] = file.split(' ').count if words
-      file_data[:bytes] = File.stat(file_path).size if bytes
-    end
-    total[:lines] += file_data[:lines] if lines
-    total[:words] += file_data[:words] if words
-    total[:bytes] += file_data[:bytes] if bytes
-
-    file_data[:name] = file_path
-    file_list << file_data
+  if pathnames
+    file_counts(pathnames, result, total, lines, words, bytes)
+  else
+    text_data = {}
+    counts(text_data, input_data, lines, words, bytes)
+    result << text_data
   end
-  file_list << total if file_list.size >= 2
-  file_list.map { |f| align_data(f) }.join("\n")
+
+  result << total if result.size >= 2
+  result.map { |f| align_data(f) }.join("\n")
+end
+
+def file_counts(pathnames, result, total, lines, words, bytes)
+  file_paths = Dir.glob(pathnames).sort
+  file_paths.each do |file_path|
+    text_data = {}
+    if directory?(file_path)
+      text_data[:directory] = "wc: #{file_path}: read: Is a directory"
+      text_data[:lines] = 0 if lines
+      text_data[:words] = 0 if words
+      text_data[:bytes] = 0 if bytes
+    else
+      text = File.read(file_path)
+      counts(text_data, text, lines, words, bytes)
+    end
+    total[:lines] += text_data[:lines] if lines
+    total[:words] += text_data[:words] if words
+    total[:bytes] += text_data[:bytes] if bytes
+
+    text_data[:name] = file_path
+    result << text_data
+  end
+end
+
+def counts(text_data, text, lines, words, bytes)
+  text_data[:lines] = text.count("\n") if lines
+  text_data[:words] = text.split(' ').count if words
+  text_data[:bytes] = text.bytesize if bytes
 end
 
 def directory?(file_path)
   # File.statにシンボリックリンクのパスを入れると例外となる
-  # その場合File.lstatにパスを入れる
-  # File.lstatで例外となる場合異常終了とする
+  # その場合異常終了とする
   File.stat(file_path).ftype == 'directory'
-rescue SystemCallError
-  File.lstat(file_path)
 end
 
-def align_data(file_data)
+def align_data(text_data)
   aligned = ''
-  return file_data[:directory] if file_data[:directory]
-  aligned += file_data[:lines] ? file_data[:lines].to_s.rjust(8) : ''
-  aligned += file_data[:words] ? file_data[:words].to_s.rjust(8) : ''
-  aligned += file_data[:bytes] ? file_data[:bytes].to_s.rjust(8) : ''
-  aligned += file_data[:name] ? " #{file_data[:name]}" : ''
+  return text_data[:directory] if text_data[:directory]
+  aligned += text_data[:lines] ? text_data[:lines].to_s.rjust(8) : ''
+  aligned += text_data[:words] ? text_data[:words].to_s.rjust(8) : ''
+  aligned += text_data[:bytes] ? text_data[:bytes].to_s.rjust(8) : ''
+  aligned += text_data[:name] ? " #{text_data[:name]}" : ''
 end
