@@ -4,53 +4,48 @@
 #require 'pathname'
 
 def run_app(pathnames, input_data, lines: false, words: false, bytes: false)
-  file_paths = Dir.glob(pathnames) if pathnames
-  result = []
-  p pathnames
+  file_paths = Dir.glob(pathnames).sort if pathnames
+  file_list = []
+  total = { lines: 0, words: 0, bytes: 0, name: 'total' }
 
-  p file_paths
   file_paths.each do |file_path|
     file_data = {}
     if directory?(file_path)
-      file_data[:directory] = "wc: #{file_path}: Is a directory\n"
-      file_data[:lines] = '0'
-      file_data[:words] = '0'
-      file_data[:bytes] = '0'
+      file_data[:directory] = "wc: #{file_path}: read: Is a directory"
+      file_data[:lines] = 0 if lines
+      file_data[:words] = 0 if words
+      file_data[:bytes] = 0 if bytes
     else
       file = File.read(file_path)
-      file_data[:lines] = count_lines(file) if lines
-      file_data[:words] = count_words(file) if words
-      file_data[:bytes] = count_bytes(file_path) if bytes
+      file_data[:lines] = file.count("\n") if lines
+      file_data[:words] = file.split(' ').count if words
+      file_data[:bytes] = File.stat(file_path).size if bytes
     end
+    total[:lines] += file_data[:lines] if lines
+    total[:words] += file_data[:words] if words
+    total[:bytes] += file_data[:bytes] if bytes
+
     file_data[:name] = file_path
-    result << align_data(file_data)
+    file_list << file_data
   end
-  p result.join("\n")
-    '   6      28     227 test/fixtures/sample/Rakefile'
-  result.join("\n")
+  file_list << total if file_list.size >= 2
+  file_list.map { |f| align_data(f) }.join("\n")
 end
 
 def directory?(file_path)
+  # File.statにシンボリックリンクのパスを入れると例外となる
+  # その場合File.lstatにパスを入れる
+  # File.lstatで例外となる場合異常終了とする
   File.stat(file_path).ftype == 'directory'
-end
-
-def count_lines(file)
-  file.count("\n").to_s
-end
-
-def count_words(file)
-  file.split(' ').count.to_s
-end
-
-def count_bytes(file_path)
-  File.stat(file_path).size.to_s
+rescue SystemCallError
+  File.lstat(file_path)
 end
 
 def align_data(file_data)
   aligned = ''
-  aligned += file_data[:directory] ? file_data[:directory] : ''
-  aligned += file_data[:lines] ? file_data[:lines].rjust(8) : ''
-  aligned += file_data[:words] ? file_data[:words].rjust(8) : ''
-  aligned += file_data[:bytes] ? file_data[:bytes].rjust(8) : ''
+  return file_data[:directory] if file_data[:directory]
+  aligned += file_data[:lines] ? file_data[:lines].to_s.rjust(8) : ''
+  aligned += file_data[:words] ? file_data[:words].to_s.rjust(8) : ''
+  aligned += file_data[:bytes] ? file_data[:bytes].to_s.rjust(8) : ''
   aligned += file_data[:name] ? " #{file_data[:name]}" : ''
 end
