@@ -27,7 +27,8 @@ class WcDevTest < Minitest::Test
 wc: test/fixtures/sample/dummy: read: Is a directory
       11      19     222 test/fixtures/sample/package.json
 wc: test/fixtures/sample/q: read: Is a directory
-     103     427    3163 total
+       3       8      72 test/fixtures/sample/space_sample
+     106     435    3235 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: true, words: true, bytes: true }
@@ -43,7 +44,8 @@ wc: test/fixtures/sample/q: read: Is a directory
 wc: test/fixtures/sample/dummy: read: Is a directory
       11 test/fixtures/sample/package.json
 wc: test/fixtures/sample/q: read: Is a directory
-     103 total
+       3 test/fixtures/sample/space_sample
+     106 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: true, words: false, bytes: false }
@@ -59,7 +61,8 @@ wc: test/fixtures/sample/q: read: Is a directory
 wc: test/fixtures/sample/dummy: read: Is a directory
       19 test/fixtures/sample/package.json
 wc: test/fixtures/sample/q: read: Is a directory
-     427 total
+       8 test/fixtures/sample/space_sample
+     435 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: false, words: true, bytes: false }
@@ -75,7 +78,8 @@ wc: test/fixtures/sample/q: read: Is a directory
 wc: test/fixtures/sample/dummy: read: Is a directory
      222 test/fixtures/sample/package.json
 wc: test/fixtures/sample/q: read: Is a directory
-    3163 total
+      72 test/fixtures/sample/space_sample
+    3235 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: false, words: false, bytes: true }
@@ -84,7 +88,7 @@ wc: test/fixtures/sample/q: read: Is a directory
 
   def test_run_app_pipe
     expected = <<-TEXT.chomp
-      10      83     504
+      11      92     575
     TEXT
     input = `ls -la #{TARGET_PATHNAME}`
     params = { lines: true, words: true, bytes: true }

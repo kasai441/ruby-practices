@@ -55,7 +55,7 @@ end
 
 def count_content(text_data, text, lines: false, words: false, bytes: false)
   text_data[:lines] = text.count("\n") if lines
-  text_data[:words] = text.split(' ').count if words
+  text_data[:words] = text.strip.split(/[\s　]+/).count if words
   text_data[:bytes] = text.bytesize if bytes
 end
 
