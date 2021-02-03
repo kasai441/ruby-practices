@@ -15,7 +15,7 @@ class WcDevTest < Minitest::Test
     TEXT
     pathname = TARGET_PATHNAME.join('Rakefile')
     params = { lines: true, words: true, bytes: true }
-    assert_equal expected, run_app([pathname], nil, **params)
+    assert_equal expected, run_app([pathname], nil, params)
   end
 
   def test_run_app_pathname_wildcard
@@ -31,7 +31,7 @@ wc: test/fixtures/sample/q: read: Is a directory
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: true, words: true, bytes: true }
-    assert_equal expected, run_app([pathname], nil, **params)
+    assert_equal expected, run_app([pathname], nil, params)
   end
 
   def test_run_app_l
@@ -47,7 +47,7 @@ wc: test/fixtures/sample/q: read: Is a directory
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: true, words: false, bytes: false }
-    assert_equal expected, run_app([pathname], nil, **params)
+    assert_equal expected, run_app([pathname], nil, params)
   end
 
   def test_run_app_w
@@ -63,7 +63,7 @@ wc: test/fixtures/sample/q: read: Is a directory
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: false, words: true, bytes: false }
-    assert_equal expected, run_app([pathname], nil, **params)
+    assert_equal expected, run_app([pathname], nil, params)
   end
 
   def test_run_app_c
@@ -79,7 +79,7 @@ wc: test/fixtures/sample/q: read: Is a directory
     TEXT
     pathname = TARGET_PATHNAME.join('*')
     params = { lines: false, words: false, bytes: true }
-    assert_equal expected, run_app([pathname], nil, **params)
+    assert_equal expected, run_app([pathname], nil, params)
   end
 
   def test_run_app_pipe
@@ -88,6 +88,6 @@ wc: test/fixtures/sample/q: read: Is a directory
     TEXT
     input = `ls -la #{TARGET_PATHNAME}`
     params = { lines: true, words: true, bytes: true }
-    assert_equal expected, run_app(nil, input, **params)
+    assert_equal expected, run_app(nil, input, params)
   end
 end

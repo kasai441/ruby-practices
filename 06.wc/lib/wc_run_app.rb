@@ -1,70 +1,57 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-#require 'pathname'
-
-def run_app(pathnames, input_data, lines: false, words: false, bytes: false)
+def run_app(pathnames, input_text, params)
   result = []
   total = { name: 'total' }
-  total[:lines] = 0 if lines
-  total[:words] = 0 if words
-  total[:bytes] = 0 if bytes
+  params.keys.each { |key| total[key] = 0 if params[key] }
 
   if pathnames
-    file_counts(pathnames, result, total, lines, words, bytes)
+    # ファイルパス引数あり
+    file_paths = Dir.glob(pathnames).sort
+    if file_paths.size.zero?
+      result << { no_file: "wc: #{pathnames[0]}: open: No such file or directory" } 
+    else
+      count_file_content(file_paths, result, total, params)
+    end
   else
+    # パスの引数がない場合は標準入力のテキスト
     text_data = {}
-    counts(text_data, input_data, lines, words, bytes)
+    count_content(text_data, input_text, **params)
     result << text_data
   end
 
+  # 結果が複数の場合はtotal表示追加
   result << total if result.size >= 2
-  result.map { |f| align_data(f) }.join("\n")
+  result.map { |r| align_data(r, params) }.join("\n")
 end
 
-def file_counts(pathnames, result, total, lines, words, bytes)
-  file_paths = Dir.glob(pathnames).sort
-
-  result << { no_file: "wc: #{pathnames[0]}: open: No such file or directory" } if file_paths.size.zero?
-  
+def count_file_content(file_paths, result, total, params)
   file_paths.each do |file_path|
-    text_data = {}
-    if directory?(file_path)
+    text_data = { name: file_path }
+    if File.stat(file_path).ftype == 'directory'
       text_data[:directory] = "wc: #{file_path}: read: Is a directory"
-      text_data[:lines] = 0 if lines
-      text_data[:words] = 0 if words
-      text_data[:bytes] = 0 if bytes
+      params.keys.each { |key| text_data[key] = 0 if params[key] }
     else
       text = File.read(file_path)
-      counts(text_data, text, lines, words, bytes)
+      count_content(text_data, text, **params)
     end
-    total[:lines] += text_data[:lines] if lines
-    total[:words] += text_data[:words] if words
-    total[:bytes] += text_data[:bytes] if bytes
-
-    text_data[:name] = file_path
+    params.keys.each { |key| total[key] += text_data[key] if params[key] }
     result << text_data
   end
 end
 
-def counts(text_data, text, lines, words, bytes)
+def count_content(text_data, text, lines: false, words: false, bytes: false)
   text_data[:lines] = text.count("\n") if lines
   text_data[:words] = text.split(' ').count if words
   text_data[:bytes] = text.bytesize if bytes
 end
 
-def directory?(file_path)
-  # File.statにシンボリックリンクのパスを入れると例外となる
-  # その場合異常終了とする
-  File.stat(file_path).ftype == 'directory'
-end
-
-def align_data(text_data)
-  aligned = ''
+def align_data(text_data, params)
   return text_data[:directory] if text_data[:directory]
   return text_data[:no_file] if text_data[:no_file]
-  aligned += text_data[:lines] ? text_data[:lines].to_s.rjust(8) : ''
-  aligned += text_data[:words] ? text_data[:words].to_s.rjust(8) : ''
-  aligned += text_data[:bytes] ? text_data[:bytes].to_s.rjust(8) : ''
+
+  aligned = ''
+  params.keys.each { |key| aligned += text_data[key].to_s.rjust(8) if params[key] }
   aligned += text_data[:name] ? " #{text_data[:name]}" : ''
 end
