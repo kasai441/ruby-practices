@@ -84,7 +84,7 @@ wc: test/fixtures/sample/q: read: Is a directory
 
   def test_run_app_pipe
     expected = <<-TEXT.chomp
-      10      83     513
+      10      83     504
     TEXT
     input = `ls -la #{TARGET_PATHNAME}`
     params = { lines: true, words: true, bytes: true }
