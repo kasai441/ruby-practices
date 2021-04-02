@@ -3,26 +3,39 @@
 require_relative 'frame'
 
 class Game
-  attr_accessor :frames
-
   def initialize(scores)
     @frames = []
-    frame = Frame.new
-    frame_num = 0
-    p scores
-    p scores.sum
-    scores.each do |s|
-      frame.last if frame_num == 9
-      frame.roll(s)
+    @scores = scores
+    frame_index = 0
+    frame = Frame.new(frame_index)
+
+    scores.each_with_index do |s, i|
+      frame.roll(s, i)
       next unless frame.fix?
 
       @frames << frame
-      frame = Frame.new
-      frame_num += 1
+      frame_index += 1
+      frame = Frame.new(frame_index)
     end
   end
 
   def score
-    @frames.map(&:score).sum
+    @frames.map(&:score).sum + bonus
+  end
+
+  private
+
+  def bonus
+    @frames.map do |f|
+      if f.strike?
+        index = f.index_strike
+        @scores[index + 1] + @scores[index + 2]
+      elsif f.spare?
+        index = f.index_spare
+        @scores[index + 1]
+      else
+        0
+      end
+    end.sum
   end
 end

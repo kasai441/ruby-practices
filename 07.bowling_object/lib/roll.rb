@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class Roll
-  attr_reader :score
+  attr_reader :score, :index
 
-  def initialize(score)
+  def initialize(score, index)
     @score = score
+    @index = index
   end
 end

@@ -5,31 +5,39 @@ require_relative 'roll'
 class Frame
   attr_accessor :rolls
 
-  def initialize
+  def initialize(index)
+    @index = index
     @rolls = []
-    @last = false
   end
 
-  def roll(score)
-    @rolls << Roll.new(score)
+  def roll(score, index)
+    @rolls << Roll.new(score, index)
   end
 
   def score
     @rolls.map(&:score).sum
   end
 
-  def last
-    @last = true
+  def score_at(index)
+    @rolls[index].score
+  end
+
+  def index_strike
+    @rolls[0].index
+  end
+
+  def index_spare
+    @rolls[1].index
   end
 
   def last?
-    @last
+    @index == 9
   end
 
   def fix?
-    # p @rolls
     if last?
-      # 3投投げているか、2投で10点を超えていない
+      # 最終フレームの終了条件
+      # 3投投げているか、2投で10点に満たないこと
       @rolls.size == 3 || (@rolls.size == 2 && score < 10)
     else
       strike? || @rolls.size == 2
