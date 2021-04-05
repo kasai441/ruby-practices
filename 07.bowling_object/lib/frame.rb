@@ -5,7 +5,8 @@ require_relative 'roll'
 class Frame
   attr_accessor :rolls
 
-  def initialize(index)
+  def initialize(index, max_frame)
+    @max_frame = max_frame
     @index = index
     @rolls = []
   end
@@ -31,13 +32,13 @@ class Frame
   end
 
   def last?
-    @index == 9
+    @index == @max_frame
   end
 
   def fix?
     if last?
       # 最終フレームの終了条件
-      # 3投投げているか、2投で10点に満たないこと
+      # 3投しているか、2投で10点に満たないこと
       @rolls.size == 3 || (@rolls.size == 2 && score < 10)
     else
       strike? || @rolls.size == 2

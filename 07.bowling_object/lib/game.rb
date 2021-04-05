@@ -3,19 +3,33 @@
 require_relative 'frame'
 
 class Game
+  MAX_FRAME = 9
+
   def initialize(scores)
-    @frames = []
     @scores = scores
+    @frames = []
     frame_index = 0
-    frame = Frame.new(frame_index)
+    frame = Frame.new(frame_index, MAX_FRAME)
 
     scores.each_with_index do |s, i|
       frame.roll(s, i)
-      next unless frame.fix?
+      if frame.fix?
+        @frames << frame
+        frame_index += 1
+        frame = Frame.new(frame_index, MAX_FRAME)
+      elsif @frames.size > MAX_FRAME
+        @frames << 'an exceeding frame'
+        break
+      end
+    end
+  end
 
-      @frames << frame
-      frame_index += 1
-      frame = Frame.new(frame_index)
+  def error_message
+    max = MAX_FRAME + 1
+    if @frames.size < max
+      "不正スコア：#{max}フレーム未満のスコアです"
+    elsif @frames.size > max
+      "不正スコア：#{max}フレームを超えるスコアです"
     end
   end
 
