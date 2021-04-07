@@ -1,28 +1,31 @@
 # frozen_string_literal: true
 
 require_relative 'row'
+require_relative 'unit'
 
 class FileList
   def initialize(path, params)
     items = Dir.foreach(path || '.').to_a
+    items = apply_order_option(items, params[:a], params[:r])
+    row_num = 1
+    @rows = []
+    row_num.times do |r|
+      m = items.map.with_index { |v, i| (i % (r + 1)).zero? ? v : nil }
+      @rows << Row.new(m.compact)
+    end
 
-    # l ? list_detail(path, files) : list_name(files)
-    @files = apply_order_option(items, params[:a], params[:r])
     # return if @files.size.zero?
   end
 
   def apply_order_option(items, a_opt, r_opt)
-    # Debian10/bash では'.'及び大文字小文字は無視してソートする
-    files = items.sort { |a, b| a.gsub(/^\./, '').downcase <=> b.gsub(/^\./, '').downcase }
-    # -a オプション
+    files = items.sort { |a, b| a.gsub(/^\./, '') <=> b.gsub(/^\./, '') }
     files.delete_if { |f| f.match?(/^\..*/) } unless a_opt
-    # -r オプション
     files.reverse! if r_opt
 
     files
   end
 
   def display
-    @files.join("\t")
+    @rows.map(&:display).join("\n")
   end
 end
