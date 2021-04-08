@@ -11,7 +11,7 @@ class UnitTest < Minitest::Test
   end
 
   def test_display
-    @unit.add_tab(2)
+    @unit.tab = 2
     assert_equal("sample\t\t", @unit.display)
   end
 

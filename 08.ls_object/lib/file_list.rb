@@ -4,6 +4,8 @@ require_relative 'row'
 require_relative 'unit'
 
 class FileList
+  attr_reader :rows
+
   def initialize(path, params)
     items = Dir.foreach(path || '.').to_a
     items = apply_order_option(items, params[:a], params[:r])
@@ -13,7 +15,6 @@ class FileList
       m = items.map.with_index { |v, i| (i % (r + 1)).zero? ? v : nil }
       @rows << Row.new(m.compact)
     end
-
     # return if @files.size.zero?
   end
 
