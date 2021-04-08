@@ -5,8 +5,9 @@ require_relative 'unit'
 class Row
   attr_accessor :units
 
-  def initialize(items)
+  def initialize(items, max = nil)
     @units = items.map { |item| Unit.new(item) }
+    @max = max
     set_tab
   end
 
@@ -16,10 +17,12 @@ class Row
   end
 
   def max_size
-    max_tab * Unit.tab_size
+    @max || max_tab * Unit.tab_size
   end
 
   def max_tab
+    return 0 if max_unit.nil?
+
     just_multiple = (max_unit.name.size % Unit.tab_size).zero? ? 1 : 0
     (max_unit.name.size / Unit.tab_size.to_f).ceil + just_multiple
   end

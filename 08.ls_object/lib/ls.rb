@@ -4,7 +4,7 @@
 require 'optparse'
 require 'etc'
 
-require_relative 'file_list'
+require_relative 'list_files'
 
 params = { a: false, r: false, l: false }
 opt = OptionParser.new
@@ -13,4 +13,5 @@ opt.on('-r') { params[:r] = true }
 opt.on('-l') { params[:l] = true }
 opt.parse!(ARGV)
 
-puts FileList.new(ARGV[0], params).display
+disp = ListFiles.new(ARGV[0], params).display
+puts disp unless disp.nil?
