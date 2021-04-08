@@ -109,15 +109,26 @@ class ListFilesTest < Minitest::Test
   end
 
   def test_apply_order_option_a
-
-  end
-
-  def test_apply_order_option_dot
-
+    prepare_data('opt_a', '.test0000000', 22)
+    expected = <<~TEXT.chomp
+      .		test0		test11		test14		test17		test2		test3		test6		test9
+      ..		test1		test12		test15		test18		test20		test4		test7
+      .test0000000	test10		test13		test16		test19		test21		test5		test8
+    TEXT
+    params = { a: true, l: false, r: false }
+    assert_equal expected, ListFiles.new(TARGET_PATHNAME.join('opt_a'), params).display
   end
 
   def test_apply_order_option_r
-
+    prepare_data('opt_r', '.test00000000000', 22)
+    expected = <<~TEXT.chomp
+      test9			test5			test20			test17			test13			test1			.
+      test8			test4			test2			test16			test12			test0
+      test7			test3			test19			test15			test11			.test00000000000
+      test6			test21			test18			test14			test10			..
+    TEXT
+    params = { a: true, l: false, r: true }
+    assert_equal expected, ListFiles.new(TARGET_PATHNAME.join('opt_r'), params).display
   end
 
   def test_no_file

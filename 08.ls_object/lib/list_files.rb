@@ -23,11 +23,9 @@ class ListFiles
   end
 
   def apply_order_option(items, a_opt, r_opt)
-    files = items.sort { |a, b| a.gsub(/^\./, '') <=> b.gsub(/^\./, '') }
-    files.delete_if { |f| f.match?(/^\..*/) } unless a_opt
-    files.reverse! if r_opt
-
-    files
+    items.sort!
+    items.delete_if { |f| f.match?(/^\..*/) } unless a_opt
+    r_opt ? items.reverse! : items
   end
 
   def display
