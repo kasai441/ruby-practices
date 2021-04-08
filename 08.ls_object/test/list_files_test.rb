@@ -69,6 +69,7 @@ class ListFilesTest < Minitest::Test
     # テスト環境の画面幅を確かめる
     assert_equal '178', `tput cols`.gsub(/\D/, '')
     list_files = ListFiles.new(TARGET_PATHNAME.join('add_row'), params)
+    list_files.divide_rows
     assert_equal 96, list_files.rows[0].size_total
     assert_equal 88, list_files.rows[1].size_total
     assert_equal expected, list_files.display
@@ -89,6 +90,7 @@ class ListFilesTest < Minitest::Test
     # テスト環境の画面幅を確かめる
     assert_equal '178', `tput cols`.gsub(/\D/, '')
     list_files = ListFiles.new(TARGET_PATHNAME.join('many_rows'), params)
+    list_files.divide_rows
     assert_equal 168, list_files.rows[0].size_total
     assert_equal 168, list_files.rows[1].size_total
     assert_equal 144, list_files.rows[2].size_total
@@ -129,6 +131,42 @@ class ListFilesTest < Minitest::Test
     TEXT
     params = { a: true, l: false, r: true }
     assert_equal expected, ListFiles.new(TARGET_PATHNAME.join('opt_r'), params).display
+  end
+
+  def test_details_display
+    prepare_data('details', '.test00000000000', 22)
+    Dir.mkdir(TARGET_PATHNAME.join('details/dir')) unless Dir.exist?(TARGET_PATHNAME.join('details/dir'))
+    expected = <<~TEXT.chomp
+      total 0
+      drwxr-xr-x  26 kasai441  staff  832  4  8 16:57 .
+      drwxr-xr-x  16 kasai441  staff  512  4  8 16:57 ..
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 .test00000000000
+      drwxr-xr-x   2 kasai441  staff   64  4  8 16:57 dir
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test0
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test1
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test10
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test11
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test12
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test13
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test14
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test15
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test16
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test17
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test18
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test19
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test2
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test20
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test21
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test3
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test4
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test5
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test6
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test7
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test8
+      -rw-r--r--   1 kasai441  staff    0  4  8 16:57 test9
+    TEXT
+    params = { a: true, l: true, r: false }
+    assert_equal expected, ListFiles.new(TARGET_PATHNAME.join('details'), params).display
   end
 
   def test_no_file
