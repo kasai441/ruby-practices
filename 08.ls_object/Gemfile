@@ -10,4 +10,5 @@ gem 'rubocop'
 group :development do
   gem 'minitest'
   gem 'rubocop-fjord', require: false
+  gem 'rake'
 end

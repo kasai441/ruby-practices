@@ -3,10 +3,9 @@
 require 'pathname'
 require 'etc'
 
-require_relative 'row'
-require_relative '../BK/unit'
+require_relative './row/names'
 
-class ListFiles
+class ListSegments
   attr_reader :rows
 
   def initialize(path, params)
@@ -14,12 +13,7 @@ class ListFiles
     @params = params
     items = Dir.exist?(@path) ? Dir.foreach(@path).to_a : [@path]
     @items = apply_order_option(items, @params[:a], @params[:r])
-    @rows = [Row.new(@items)]
-  end
-
-  def dir_of(path)
-    path = path.gsub(/\/[^\/]*$/, '')
-    path.empty? ? '.' : path
+    @rows = [Row::Names.new(@items)]
   end
 
   def apply_order_option(items, a_opt, r_opt)
@@ -45,7 +39,7 @@ class ListFiles
     rows_num = (@items.size / columns_num.to_f).ceil
     rows_num.times do |r|
       m = @items.map.with_index { |v, i| i % rows_num == r ? v : nil }
-      @rows[r] = Row.new(m.compact, max_size)
+      @rows[r] = Row::Names.new(m.compact, max_size)
     end
   end
 

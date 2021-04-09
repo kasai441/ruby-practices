@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-class Unit
-  TAB_SIZE = 8
+require_relative 'segment'
+
+class Segment::Name
+  include Segment
+
   attr_accessor :name, :tab
 
   def initialize(name)
