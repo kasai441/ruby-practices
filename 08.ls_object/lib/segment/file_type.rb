@@ -2,7 +2,7 @@
 
 require_relative 'segment'
 
-class Segment::Name
+class Segment::FileType
   include Segment
   extend Segment
 
@@ -11,14 +11,5 @@ class Segment::Name
   def initialize(name)
     @name = name
     @space = 0
-  end
-
-  def display
-    @name + TAB_STRING * @space
-  end
-
-  def need_space(max_size)
-    diff = max_size - @name.size
-    (diff / TAB_SIZE.to_f).ceil
   end
 end

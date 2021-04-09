@@ -8,17 +8,17 @@ require_relative '../../lib/segment/name'
 module TestSegment
   class TestSegment::Name < Minitest::Test
     def setup
-      @segment_name = Segment::Name.new('sample')
+      @unit = Segment::Name.new('sample')
     end
 
     def test_display
-      @segment_name.tab = 2
-      assert_equal("sample\t\t", @segment_name.display)
+      @unit.space = 2
+      assert_equal("sample\t\t", @unit.display)
     end
 
     def test_need_tab
-      assert_equal(2, @segment_name.need_tab(22))
-      assert_equal(3, @segment_name.need_tab(23))
+      assert_equal(2, @unit.need_space(22))
+      assert_equal(3, @unit.need_space(23))
     end
   end
 end

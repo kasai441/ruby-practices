@@ -4,39 +4,38 @@
 require 'minitest/autorun'
 
 require_relative '../../lib/row/names'
-# require_relative '../../lib/row/details'
 
 module TestRow
   class TestRow::Names < Minitest::Test
     def setup
       items = %w[one two]
-      @row_names = Row::Names.new(items)
+      @units = Row::Names.new(items)
     end
 
     def test_display
-      @row_names.units[0].tab = 2
-      @row_names.units[1].tab = 2
-      assert_equal("one\t\ttwo", @row_names.display)
+      @units.units[0].space = 2
+      @units.units[1].space = 2
+      assert_equal("one\t\ttwo", @units.display)
     end
 
     def test_max_unit
-      @row_names.add_unit('threeeee')
-      assert_equal('threeeee', @row_names.max_unit.name)
+      @units.add_unit('threeeee')
+      assert_equal('threeeee', @units.max_unit.name)
     end
 
-    def test_add_tab_add_a_tab_per_8_chars
-      @row_names.add_unit('threeeee')
-      @row_names.add_unit('00001111222233334444555566667777')
-      @row_names.set_tab
-      assert_equal(1, @row_names.max_unit.tab)
-      assert_equal(5, @row_names.units[0].tab)
-      assert_equal(5, @row_names.units[1].tab)
-      assert_equal(4, @row_names.units[2].tab)
+    def test_add_a_tab_per_8_chars
+      @units.add_unit('threeeee')
+      @units.add_unit('00001111222233334444555566667777')
+      @units.set_space
+      assert_equal(1, @units.max_unit.space)
+      assert_equal(5, @units.units[0].space)
+      assert_equal(5, @units.units[1].space)
+      assert_equal(4, @units.units[2].space)
     end
 
     def test_row_size
-      @row_names.add_unit('threeeee')
-      assert_equal(48, @row_names.size_total)
+      @units.add_unit('threeeee')
+      assert_equal(48, @units.size_total)
     end
   end
 end
