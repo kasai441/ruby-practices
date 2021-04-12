@@ -13,7 +13,7 @@ opt.on('-r') { params[:r] = true }
 opt.on('-l') { params[:l] = true }
 opt.parse!(ARGV)
 
-stats = %i[type size name]
+stats = %i[type mode nlink user group size timestamp name]
 
 disp = ListSegments.new(ARGV[0], params, stats).display
 puts disp unless disp.nil?
