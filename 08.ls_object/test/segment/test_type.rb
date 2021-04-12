@@ -14,9 +14,8 @@ module TestSegment
     def setup
       segment = 'f'
       prepare_data('type',segment, 5, 't')
-      dir_path = TARGET_PATHNAME.join('type')
-      stats = %i[type name]
-      @unit = Segment::Type.new(segment, dir_path)
+      @dir_path = TARGET_PATHNAME.join('type')
+      @unit = Segment::Type.new(segment, @dir_path)
     end
 
     def test_display
@@ -36,8 +35,9 @@ module TestSegment
 
     def test_get_data
       Dir.mkdir(TARGET_PATHNAME.join('type/dir')) unless Dir.exist?(TARGET_PATHNAME.join('type/dir'))
-      assert_equal('-', @unit.get_data('f'))
-      assert_equal('d', @unit.get_data('dir'))
+      assert_equal('-', @unit.get_data)
+      @unit = Segment::Type.new('dir', @dir_path)
+      assert_equal('d', @unit.get_data)
     end
   end
 end
