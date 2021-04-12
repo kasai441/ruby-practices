@@ -33,11 +33,11 @@ module TestSegment
       assert_equal('d', @unit.to_char_ftype('directory'))
     end
 
-    def test_get_data
+    def test_stats_data
       Dir.mkdir(TARGET_PATHNAME.join('type/dir')) unless Dir.exist?(TARGET_PATHNAME.join('type/dir'))
-      assert_equal('-', @unit.get_data)
+      assert_equal('-', @unit.stats_data)
       @unit = Segment::Type.new('dir', @dir_path)
-      assert_equal('d', @unit.get_data)
+      assert_equal('d', @unit.stats_data)
     end
   end
 end

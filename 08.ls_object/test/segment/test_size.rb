@@ -30,12 +30,12 @@ module TestSegment
       assert_equal(2, @unit2.need_space(5))
     end
 
-    def test_get_data
+    def test_stats_data
       Dir.mkdir(TARGET_PATHNAME.join('size/dir')) unless Dir.exist?(TARGET_PATHNAME.join('size/dir'))
-      assert_equal('0', @unit1.get_data)
-      assert_equal('267', @unit2.get_data)
+      assert_equal('0', @unit1.stats_data)
+      assert_equal('267', @unit2.stats_data)
       @unit3 = Segment::Size.new('dir', @dir_path)
-      assert_equal('64', @unit3.get_data)
+      assert_equal('64', @unit3.stats_data)
     end
   end
 end

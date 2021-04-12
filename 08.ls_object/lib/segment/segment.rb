@@ -12,7 +12,7 @@ module Segment
     @name = @segment = name
     @space = 0
     @dir_path = dir_path
-    get_data if dir_path
+    stats_data if dir_path
   end
 
   def reset_space
@@ -35,7 +35,7 @@ module Segment
     SPACE_SIZE
   end
 
-  def get_data
+  def stats_data
     stat = get_stat(Pathname(@dir_path).join(@segment))
     choose(stat)
   end

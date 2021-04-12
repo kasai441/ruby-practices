@@ -2,6 +2,7 @@
 
 require_relative 'row'
 require_relative '../segment/type'
+require_relative '../segment/size'
 require_relative '../segment/details_unit'
 
 class Row::DetailsStats
@@ -11,26 +12,17 @@ class Row::DetailsStats
 
   def initialize(segments, dir_path, stat)
     @dir_path = dir_path
-    # @units = {
-    #   types: Row::Types.new(segments, nil, dir_path),
-    #   names: Row::Names.new(segments, nil, dir_path)
-    # }
     @units = segments.map do |segment|
       which_stat(stat).new(segment, @dir_path)
     end
-      # Block.new(stat.blocks),
-      # Mode.new(to_char_mode(stat.mode)),
-      # Nlink.new(stat.nlink),
-      # User.new(Etc.getpwuid(stat.uid).name),
-      # Group.new(get_group_name(stat.gid)),
-      # Size.new(stat.size),
-      # Timestamp.new(stat.mtime.strftime('%b %d %H:%M')),
+    @max = nil
     set_space
   end
 
   def which_stat(stat)
     {
       "type": Segment::Type,
+      "size": Segment::Size,
       "name": Segment::DetailsUnit
     }[stat]
   end
@@ -38,6 +30,14 @@ class Row::DetailsStats
   def display
     @units.map(&:display)
   end
+
+  # Block.new(stat.blocks),
+  # Mode.new(to_char_mode(stat.mode)),
+  # Nlink.new(stat.nlink),
+  # User.new(Etc.getpwuid(stat.uid).name),
+  # Group.new(get_group_name(stat.gid)),
+  # Size.new(stat.size),
+  # Timestamp.new(stat.mtime.strftime('%b %d %H:%M')),
 
   def to_char_mode(mode)
     mode = format('0%o', mode)[-3, 3]

@@ -15,19 +15,27 @@ module TestRow
     def setup
       prepare_data('details_stats', '00001111', 3, 't')
       @dir_path = TARGET_PATHNAME.join('details_stats')
+      `cp -f #{TARGET_PATHNAME.join('../../Gemfile')} #{TARGET_PATHNAME.join('details_stats')}`
+      Dir.mkdir(TARGET_PATHNAME.join('details_stats/dir')) unless Dir.exist?(TARGET_PATHNAME.join('details_stats/dir'))
       @segments = ListSegments.apply_order_option(Dir.foreach(@dir_path).to_a, false, false)
     end
 
     def test_display_type
       stat = :type
       rows = Row::DetailsStats.new(@segments, @dir_path, stat)
-      assert_equal(%w[- - - -], rows.display)
+      assert_equal(%w[- - d - - -], rows.display)
     end
 
     def test_display_unit
+      stat = :size
+      rows = Row::DetailsStats.new(@segments, @dir_path, stat)
+      assert_equal(['    0', '  267', '   64', '    0', '    0', '    0'], rows.display)
+    end
+
+    def test_display_unit_name
       stat = :name
       rows = Row::DetailsStats.new(@segments, @dir_path, stat)
-      assert_equal([' 00001111', ' t0', ' t1', ' t2'], rows.display)
+      assert_equal([' 00001111', ' Gemfile', ' dir', ' t0', ' t1', ' t2'], rows.display)
     end
 
     #
