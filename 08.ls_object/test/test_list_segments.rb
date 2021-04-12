@@ -5,15 +5,12 @@ require 'minitest/autorun'
 require 'pathname'
 require 'fileutils'
 
-require_relative '../lib/ls'
+require_relative '../bin/ls'
 require_relative '../lib/list_segments'
+require_relative 'test_helper'
 
 class TestListSegments < Minitest::Test
-  TARGET_PATHNAME = Pathname('test/fixtures')
-
-  def setup
-    prepare_data('sample', 'sample')
-  end
+  include TestHelper
 
   def test_short_display_default
     prepare_data('seven', '0000111')
@@ -173,17 +170,5 @@ class TestListSegments < Minitest::Test
     prepare_data('no_file', nil, 0)
     params = { a: false, l: false, r: false }
     assert_nil ListSegments.new(TARGET_PATHNAME.join('no_file'), params).display
-  end
-
-  private
-
-  def prepare_data(dir, target = nil, loop_num = 10, sample = 'test')
-    return if Dir.exist?(TARGET_PATHNAME.join(dir))
-
-    Dir.mkdir(TARGET_PATHNAME.join(dir))
-    loop_num.times do |i|
-      File.open(TARGET_PATHNAME.join("#{dir}/#{sample}#{i}"), 'w')
-    end
-    File.open(TARGET_PATHNAME.join("#{dir}/#{target}"), 'w') unless target.nil?
   end
 end

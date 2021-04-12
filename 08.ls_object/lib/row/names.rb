@@ -8,8 +8,8 @@ class Row::Names
 
   attr_accessor :units
 
-  def initialize(items, max = nil)
-    @units = items.map { |item| Segment::Name.new(item) }
+  def initialize(segments, max = nil, dir_path = nil)
+    @units = segments.map { |item| Segment::Name.new(item) }
     @max = max
     set_space
   end

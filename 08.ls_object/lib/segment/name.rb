@@ -8,11 +8,6 @@ class Segment::Name
 
   attr_accessor :name, :space
 
-  def initialize(name)
-    @name = name
-    @space = 0
-  end
-
   def display
     @name + TAB_STRING * @space
   end
