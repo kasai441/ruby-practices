@@ -20,7 +20,7 @@ module TestRow
 
     def test_max_unit
       @units.add_unit('threeeee')
-      assert_equal('threeeee', @units.max_unit.name)
+      assert_equal('threeeee', @units.max_unit.value)
     end
 
     def test_add_a_tab_per_8_chars

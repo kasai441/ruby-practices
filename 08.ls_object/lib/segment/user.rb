@@ -2,18 +2,18 @@
 
 require 'etc'
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::User < Segment::DetailsUnit
-  def need_space(max_size)
-    max_size - @name.size
-  end
+class Segment::User
+  include Segment
+
+  attr_accessor :value, :space
 
   def display
-    SPACE_STRING + @name
+    SPACE_STRING + @value
   end
 
   def choose(stat)
-    @name = Etc.getpwuid(stat.uid).name
+    @value = Etc.getpwuid(stat.uid).name
   end
 end

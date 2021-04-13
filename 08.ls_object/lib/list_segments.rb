@@ -9,13 +9,13 @@ require_relative './row/details'
 class ListSegments
   attr_reader :rows
 
-  def initialize(path, params, stats = nil)
+  def initialize(path, params, stats)
     @path = path || '.'
     @params = params
     @stats = stats
     segments = Dir.exist?(@path) ? Dir.foreach(@path).to_a : [@path]
     @segments = ListSegments.apply_order_option(segments, @params[:a], @params[:r])
-    @rows = [Row::Names.new(@segments)]
+    @rows = nil
   end
 
   def self.apply_order_option(segments, a_opt, r_opt)
@@ -28,6 +28,7 @@ class ListSegments
     if @params[:l]
       Row::Details.new(@segments, nil, @path, @stats).display
     else
+      @rows = [Row::Names.new(@segments)]
       divide_rows
       @rows.map(&:display).join("\n") unless @segments.size.zero?
     end

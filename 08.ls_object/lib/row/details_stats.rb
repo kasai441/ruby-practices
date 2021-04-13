@@ -9,6 +9,7 @@ require_relative '../segment/group'
 require_relative '../segment/size'
 require_relative '../segment/timestamp'
 require_relative '../segment/details_unit'
+require_relative '../segment/blocks'
 
 class Row::DetailsStats
   include Row
@@ -16,9 +17,8 @@ class Row::DetailsStats
   attr_accessor :units
 
   def initialize(segments, dir_path, stat)
-    @dir_path = dir_path
     @units = segments.map do |segment|
-      which_stat(stat).new(segment, @dir_path)
+      which_stat(stat).new(segment, dir_path)
     end
     @max = nil
     set_space
@@ -33,17 +33,12 @@ class Row::DetailsStats
       "group": Segment::Group,
       "size": Segment::Size,
       "timestamp": Segment::Timestamp,
-      "name": Segment::DetailsUnit
+      "name": Segment::DetailsUnit,
+      "blocks": Segment::Blocks
     }[stat]
   end
 
   def display
     @units.map(&:display)
   end
-
-  # Block.new(stat.blocks),
-  # Nlink.new(stat.nlink),
-  # User.new(Etc.getpwuid(stat.uid).name),
-  # Group.new(get_group_name(stat.gid)),
-  # Timestamp.new(stat.mtime.strftime('%b %d %H:%M')),
 end

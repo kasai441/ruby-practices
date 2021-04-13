@@ -2,20 +2,16 @@
 
 require_relative 'segment'
 
-class Segment::DetailsUnit
+class Segment::Blocks
   include Segment
 
   attr_accessor :value, :space
 
-  def need_space(_)
-    1
+  def choose(stat)
+    @value = stat.blocks
   end
 
   def display
-    SPACE_STRING * @space + @value
-  end
-
-  def choose(_)
     @value
   end
 end

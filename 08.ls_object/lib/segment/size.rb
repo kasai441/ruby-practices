@@ -1,15 +1,22 @@
 # frozen_string_literal: true
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Size < Segment::DetailsUnit
-  MINIMUM = 5
+class Segment::Size
+  include Segment
+
+  attr_accessor :value, :space
+
+  def display
+    SPACE_STRING * @space + @value
+  end
+
+  BLANK_NUM = 2
   def need_space(max_size)
-    max_size = MINIMUM if max_size < MINIMUM
-    max_size - @name.size
+    max_size - @value.size + BLANK_NUM
   end
 
   def choose(stat)
-    @name = stat.size.to_s
+    @value = stat.size.to_s
   end
 end

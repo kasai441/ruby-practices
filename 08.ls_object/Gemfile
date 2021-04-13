@@ -9,6 +9,6 @@ gem 'rubocop'
 # For plain Ruby scripts
 group :development do
   gem 'minitest'
-  gem 'rubocop-fjord', require: false
   gem 'rake'
+  gem 'rubocop-fjord', require: false
 end

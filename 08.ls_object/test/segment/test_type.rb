@@ -12,10 +12,9 @@ module TestSegment
     include TestHelper
 
     def setup
-      segment = 'f'
-      prepare_data('type',segment, 5, 't')
-      @dir_path = TARGET_PATHNAME.join('type')
-      @unit = Segment::Type.new(segment, @dir_path)
+      segment, dir_path = prepare_variable_stats
+      @unit = Segment::Type.new(segment, dir_path)
+      @unit2 = Segment::Type.new('dir', dir_path)
     end
 
     def test_display
@@ -30,14 +29,12 @@ module TestSegment
 
     def test_to_char_ftype
       assert_equal('-', @unit.to_char_ftype('file'))
-      assert_equal('d', @unit.to_char_ftype('directory'))
+      assert_equal('d', @unit2.to_char_ftype('directory'))
     end
 
     def test_stats_data
-      Dir.mkdir(TARGET_PATHNAME.join('type/dir')) unless Dir.exist?(TARGET_PATHNAME.join('type/dir'))
       assert_equal('-', @unit.stats_data)
-      @unit = Segment::Type.new('dir', @dir_path)
-      assert_equal('d', @unit.stats_data)
+      assert_equal('d', @unit2.stats_data)
     end
   end
 end

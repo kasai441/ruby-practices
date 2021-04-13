@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Mode < Segment::DetailsUnit
+class Segment::Mode
+  include Segment
+
+  attr_accessor :value, :space
+
   def need_space(_)
     0
   end
 
   def choose(stat)
-    @name = to_char_mode(stat.mode)
+    @value = to_char_mode(stat.mode)
   end
 
   def to_char_mode(mode)

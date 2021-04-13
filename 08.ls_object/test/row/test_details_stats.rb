@@ -13,50 +13,32 @@ module TestRow
     include TestHelper
 
     def setup
-      prepare_data('details_stats', '00001111', 3, 't')
-      @dir_path = TARGET_PATHNAME.join('details_stats')
-      `cp -f #{TARGET_PATHNAME.join('../../Gemfile')} #{TARGET_PATHNAME.join('details_stats')}`
-      Dir.mkdir(TARGET_PATHNAME.join('details_stats/dir')) unless Dir.exist?(TARGET_PATHNAME.join('details_stats/dir'))
+      @segment, @dir_path = prepare_variable_stats
       @segments = ListSegments.apply_order_option(Dir.foreach(@dir_path).to_a, false, false)
     end
 
     def test_display_type
       stat = :type
       rows = Row::DetailsStats.new(@segments, @dir_path, stat)
-      assert_equal(%w[- - d - - -], rows.display)
+      assert_equal(%w[- d - - - - - -], rows.display)
     end
 
     def test_display_unit
       stat = :size
       rows = Row::DetailsStats.new(@segments, @dir_path, stat)
-      assert_equal(['    0', '  267', '   64', '    0', '    0', '    0'], rows.display)
+      assert_equal(['  267', '   64', '    0', '    0', '    0', '    0', '    0', '    0'], rows.display)
     end
 
     def test_display_unit_name
       stat = :name
       rows = Row::DetailsStats.new(@segments, @dir_path, stat)
-      assert_equal([' 00001111', ' Gemfile', ' dir', ' t0', ' t1', ' t2'], rows.display)
+      assert_equal([' Gemfile', ' dir', ' t0', ' t1', ' t2', ' t3', ' t4', ' variable_stats'], rows.display)
     end
 
-    #
-    # def test_max_unit
-    #   @rows.add_unit('threeeee')
-    #   assert_equal('threeeee', @rows.max_unit.name)
-    # end
-    #
-    # def test_add_a_tab_per_8_chars
-    #   @rows.add_unit('threeeee')
-    #   @rows.add_unit('00001111222233334444555566667777')
-    #   @rows.set_space
-    #   assert_equal(1, @rows.max_unit.space)
-    #   assert_equal(5, @rows.units[0].space)
-    #   assert_equal(5, @rows.units[1].space)
-    #   assert_equal(4, @rows.units[2].space)
-    # end
-    #
-    # def test_row_size
-    #   @rows.add_unit('threeeee')
-    #   assert_equal(48, @rows.size_total)
-    # end
+    def test_display_blocks
+      stat = :blocks
+      rows = Row::DetailsStats.new(@segments, @dir_path, stat)
+      assert_equal([8, 0, 0, 0, 0, 0, 0, 0], rows.display)
+    end
   end
 end

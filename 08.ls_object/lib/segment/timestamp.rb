@@ -1,13 +1,21 @@
 # frozen_string_literal: true
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Timestamp < Segment::DetailsUnit
+class Segment::Timestamp
+  include Segment
+
+  attr_accessor :value, :space
+
   def need_space(_)
     0
   end
 
+  def display
+    SPACE_STRING + @value
+  end
+
   def choose(stat)
-    @name = stat.mtime.strftime('%b %d %H:%M')
+    @value = stat.mtime.strftime('%_m %_d %H:%M')
   end
 end

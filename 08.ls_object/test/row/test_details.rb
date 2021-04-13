@@ -13,23 +13,23 @@ module TestRow
     include TestHelper
 
     def setup
-      prepare_data('row_details','00001111', 3, 't')
-      dir_path = TARGET_PATHNAME.join('row_details')
-      `cp -f #{TARGET_PATHNAME.join('../../Gemfile')} #{TARGET_PATHNAME.join('row_details')}`
-      Dir.mkdir(TARGET_PATHNAME.join('row_details/dir')) unless Dir.exist?(TARGET_PATHNAME.join('row_details/dir'))
-      stats = %i[type size name]
+      _, dir_path = prepare_variable_stats
+      stats = %i[type mode nlink user group size timestamp name]
       segments = ListSegments.apply_order_option(Dir.foreach(dir_path).to_a, false, false)
       @rows = Row::Details.new(segments, nil, dir_path, stats)
     end
 
     def test_display
       expected = <<~TEXT.chomp
-        -    0 00001111
-        -  267 Gemfile
-        d   64 dir
-        -    0 t0
-        -    0 t1
-        -    0 t2
+        total 8
+        -rw-r--r--  1 kasai441  staff  267  4 13 15:34 Gemfile
+        drwxr-xr-x  2 kasai441  staff   64  4 13 14:37 dir
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 t0
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 t1
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 t2
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 t3
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 t4
+        -rw-r--r--  1 kasai441  staff    0  4 13 14:37 variable_stats
       TEXT
       assert_equal(expected, @rows.display)
     end

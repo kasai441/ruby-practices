@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Type < Segment::DetailsUnit
+class Segment::Type
+  include Segment
+
+  attr_accessor :value, :space
+
   def need_space(_)
     0
   end
 
   def choose(stat)
-    @name = to_char_ftype(stat.ftype)
+    @value = to_char_ftype(stat.ftype)
   end
 
   def to_char_ftype(ftype)

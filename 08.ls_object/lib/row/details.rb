@@ -11,6 +11,7 @@ class Row::Details
   def initialize(segments, max = nil, dir_path = nil, stats = nil)
     @segments = segments
     @max = max
+    @blocks = Row::DetailsStats.new(segments, dir_path, :blocks).display.sum
     @stats = stats.map do |stat|
       Row::DetailsStats.new(segments, dir_path, stat)
     end
@@ -19,6 +20,6 @@ class Row::Details
   def display
     @segments.map.with_index do |_, i|
       @stats.map { |stat| stat.display[i] }.join
-    end.join("\n")
+    end.insert(0, "total #{@blocks}").join("\n")
   end
 end

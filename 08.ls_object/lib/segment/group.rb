@@ -2,17 +2,25 @@
 
 require 'etc'
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Group < Segment::DetailsUnit
+class Segment::Group
+  include Segment
+
+  attr_accessor :value, :space
+
   MINIMUM = 7
   def need_space(max_size)
     max_size = MINIMUM if max_size < MINIMUM
-    max_size - @name.size
+    max_size - @value.size
+  end
+
+  def display
+    SPACE_STRING * @space + @value
   end
 
   def choose(stat)
-    @name = get_group_name(stat.gid)
+    @value = get_group_name(stat.gid)
   end
 
   def get_group_name(gid)

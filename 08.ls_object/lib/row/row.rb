@@ -21,10 +21,10 @@ module Row
   end
 
   def max_space
-    max_unit.nil? ? 0 : max_unit.name.size
+    max_unit.nil? ? 0 : max_unit.value.size
   end
 
   def max_unit
-    @units.max_by { |v| v.name.size }
+    @units.max_by { |v| v.value.size }
   end
 end

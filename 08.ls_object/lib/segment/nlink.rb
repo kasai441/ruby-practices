@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
-require_relative 'details_unit'
+require_relative 'segment'
 
-class Segment::Nlink < Segment::DetailsUnit
-  MINIMUM = 3
+class Segment::Nlink
+  include Segment
+
+  attr_accessor :value, :space
+
+  BLANK_NUM = 2
   def need_space(max_size)
-    max_size = MINIMUM if max_size < MINIMUM
-    max_size - @name.size
+    max_size - @value.size + BLANK_NUM
   end
 
   def display
-    SPACE_STRING * @space + @name
+    SPACE_STRING * @space + @value
   end
 
   def choose(stat)
-    @name = stat.nlink.to_s
+    @value = stat.nlink.to_s
   end
 end

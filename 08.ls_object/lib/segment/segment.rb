@@ -8,8 +8,8 @@ module Segment
   SPACE_STRING = ' '
   SPACE_SIZE = 1
 
-  def initialize(name, dir_path = nil)
-    @name = @segment = name
+  def initialize(value, dir_path = nil)
+    @value = @segment = value
     @space = 0
     @dir_path = dir_path
     stats_data if dir_path
@@ -20,11 +20,11 @@ module Segment
   end
 
   def display
-    @name + SPACE_STRING * @space
+    @value + SPACE_STRING * @space
   end
 
   def need_space(max_size)
-    max_size - @name.size
+    max_size - @value.size
   end
 
   def tab_size
