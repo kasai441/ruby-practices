@@ -9,9 +9,34 @@ class Row::Names
   attr_accessor :units
 
   def initialize(segments, max = nil)
-    @units = segments.map { |item| Segment::Name.new(item) }
+    @segments = segments
+    @units = segments.map { |segment| Segment::Name.new(segment) }
     @max = max
     set_space
+  end
+
+  def display
+    rows.map(&:display_units).join("\n") unless @segments.size.zero?
+  end
+
+  def rows
+    return [self] if size_total <= display_size.to_i
+
+    columns_num = display_size.to_i / max_size
+    rows_num = (@units.size / columns_num.to_f).ceil
+    Array.new(rows_num).map.with_index do |_, row_idx|
+      m = @segments.map.with_index { |v, i| i % rows_num == row_idx ? v : nil }
+      Row::Names.new(m.compact, max_size)
+    end
+  end
+
+  def display_units
+    @units.last.reset_space
+    @units.map(&:display).join
+  end
+
+  def display_size
+    `tput cols`.gsub(/\D/, '')
   end
 
   def max_size

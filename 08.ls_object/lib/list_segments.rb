@@ -7,15 +7,16 @@ require_relative './row/names'
 require_relative './row/details'
 
 class ListSegments
-  attr_reader :rows
-
   def initialize(path, params, stats)
     @path = path || '.'
     @params = params
+    @segments = to_segments
     @stats = stats
+  end
+
+  def to_segments
     segments = Dir.exist?(@path) ? Dir.foreach(@path).to_a : [@path]
-    @segments = ListSegments.apply_order_option(segments, @params[:a], @params[:r])
-    @rows = nil
+    ListSegments.apply_order_option(segments, @params[:a], @params[:r])
   end
 
   def self.apply_order_option(segments, a_opt, r_opt)
@@ -28,25 +29,7 @@ class ListSegments
     if @params[:l]
       Row::Details.new(@segments, nil, @path, @stats).display
     else
-      @rows = [Row::Names.new(@segments)]
-      divide_rows
-      @rows.map(&:display).join("\n") unless @segments.size.zero?
+      Row::Names.new(@segments).display
     end
-  end
-
-  def divide_rows
-    return if @rows.first.size_total <= display_size.to_i
-
-    max_size = @rows.first.max_size
-    columns_num = display_size.to_i / max_size
-    rows_num = (@segments.size / columns_num.to_f).ceil
-    rows_num.times do |r|
-      m = @segments.map.with_index { |v, i| i % rows_num == r ? v : nil }
-      @rows[r] = Row::Names.new(m.compact, max_size)
-    end
-  end
-
-  def display_size
-    `tput cols`.gsub(/\D/, '')
   end
 end

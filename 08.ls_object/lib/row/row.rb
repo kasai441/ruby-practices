@@ -5,11 +5,6 @@ require_relative '../segment/segment'
 module Row
   include Segment
 
-  def display
-    @units.last.reset_space
-    @units.map(&:display).join
-  end
-
   def set_space
     @units.each do |unit|
       unit.space = unit.need_space(max_size)
