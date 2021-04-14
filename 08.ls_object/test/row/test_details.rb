@@ -16,7 +16,7 @@ module TestRow
       _, dir_path = prepare_variable_stats
       stats = %i[type mode nlink user group size timestamp name]
       segments = ListSegments.apply_order_option(Dir.foreach(dir_path).to_a, false, false)
-      @rows = Row::Details.new(segments, nil, dir_path, stats)
+      @rows = Row::Details.new(segments, dir_path, stats)
     end
 
     def test_display

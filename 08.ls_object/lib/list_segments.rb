@@ -27,7 +27,7 @@ class ListSegments
 
   def display
     if @params[:l]
-      Row::Details.new(@segments, nil, @path, @stats).display
+      Row::Details.new(@segments, @path, @stats).display
     else
       Row::Names.new(@segments).display
     end
