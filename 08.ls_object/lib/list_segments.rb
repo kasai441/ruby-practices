@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-require 'etc'
-
 require_relative './row/names'
 require_relative './row/details'
 

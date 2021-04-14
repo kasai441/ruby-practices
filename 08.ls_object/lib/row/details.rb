@@ -14,9 +14,7 @@ require_relative '../segment/blocks'
 class Row::Details
   include Row
 
-  attr_accessor :units
-
-  def initialize(segments, dir_path = nil, stats = nil)
+  def initialize(segments, dir_path, stats)
     @segments = segments
     @max = nil
     @units = nil

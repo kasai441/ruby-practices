@@ -10,8 +10,8 @@ module Segment
 
   def initialize(value, dir_path = nil)
     @value = @segment = value
-    @space = 0
     @dir_path = dir_path
+    @space = 0
     stats_data if dir_path
   end
 

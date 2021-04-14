@@ -6,7 +6,7 @@ require_relative '../segment/name'
 class Row::Names
   include Row
 
-  attr_accessor :units
+  attr_reader :units
 
   def initialize(segments, max = nil)
     @segments = segments

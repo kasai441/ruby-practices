@@ -17,9 +17,7 @@ module TestRow
     end
 
     def test_display
-      @units.units[0].space = 2
-      @units.units[1].space = 2
-      assert_equal("one\t\ttwo", @units.display)
+      assert_equal("one\ttwo", @units.display)
     end
 
     def test_max_unit
