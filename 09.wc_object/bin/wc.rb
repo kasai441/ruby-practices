@@ -24,4 +24,4 @@ pathnames = paths.size.zero? ? nil : paths.map { |p| Pathname(p) }.sort
 # パスが指定されている場合、パイプからの標準入力があっても無視される
 input_text = $stdin.read unless pathnames
 
-puts run_app(pathnames, input_text, params)
+puts WordCount.new(pathnames, input_text, params).display
