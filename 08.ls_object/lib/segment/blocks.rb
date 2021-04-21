@@ -7,11 +7,13 @@ class Segment::Blocks
 
   attr_accessor :value, :space
 
-  def choose(stat)
-    @value = stat.blocks
-  end
-
   def display
     @value
+  end
+
+  private
+
+  def choose(stat)
+    @value = stat.blocks
   end
 end

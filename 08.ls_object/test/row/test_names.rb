@@ -30,9 +30,6 @@ module TestRow
       @units.add_unit('00001111222233334444555566667777')
       @units.set_space
       assert_equal(1, @units.max_unit.space)
-      assert_equal(5, @units.units[0].space)
-      assert_equal(5, @units.units[1].space)
-      assert_equal(4, @units.units[2].space)
     end
 
     def test_row_size

@@ -27,6 +27,13 @@ module Segment
     max_size - @value.size
   end
 
+  def stats_data
+    stat = get_stat(Pathname(@dir_path).join(@segment))
+    choose(stat)
+  end
+
+  private
+
   def tab_size
     TAB_SIZE
   end
@@ -35,18 +42,12 @@ module Segment
     SPACE_SIZE
   end
 
-  def stats_data
-    stat = get_stat(Pathname(@dir_path).join(@segment))
-    choose(stat)
-  end
-
   def get_stat(path)
     # File.statにシンボリックリンクのパスを入れると例外となる
     # その場合File.lstatにパスを入れる
     # File.lstatで例外となる場合異常終了とする
     File.stat(path)
   rescue SystemCallError
-    p path
     File.lstat(path)
   end
 end

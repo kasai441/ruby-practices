@@ -25,6 +25,14 @@ class Row::Details
     end
   end
 
+  def display
+    @segments.map.with_index do |_, i|
+      @stats.map { |stat| stat[i] }.join
+    end.insert(0, "total #{@blocks}").join("\n")
+  end
+
+  private
+
   def fetch_stats(segments, dir_path, stat)
     @units = segments.map do |segment|
       which_stat(stat).new(segment, dir_path)
@@ -45,11 +53,5 @@ class Row::Details
       "name": Segment::DetailsUnit,
       "blocks": Segment::Blocks
     }[stat]
-  end
-
-  def display
-    @segments.map.with_index do |_, i|
-      @stats.map { |stat| stat[i] }.join
-    end.insert(0, "total #{@blocks}").join("\n")
   end
 end

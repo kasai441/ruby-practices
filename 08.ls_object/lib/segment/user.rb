@@ -13,6 +13,8 @@ class Segment::User
     SPACE_STRING + @value
   end
 
+  private
+
   def choose(stat)
     @value = Etc.getpwuid(stat.uid).name
   end

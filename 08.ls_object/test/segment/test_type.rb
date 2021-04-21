@@ -27,11 +27,6 @@ module TestSegment
       assert_equal(0, @unit.need_space(5))
     end
 
-    def test_to_char_ftype
-      assert_equal('-', @unit.to_char_ftype('file'))
-      assert_equal('d', @unit2.to_char_ftype('directory'))
-    end
-
     def test_stats_data
       assert_equal('-', @unit.stats_data)
       assert_equal('d', @unit2.stats_data)

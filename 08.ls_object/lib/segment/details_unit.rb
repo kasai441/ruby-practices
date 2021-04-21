@@ -7,13 +7,15 @@ class Segment::DetailsUnit
 
   attr_accessor :value, :space
 
+  def display
+    SPACE_STRING * @space + @value
+  end
+
   def need_space(_)
     1
   end
 
-  def display
-    SPACE_STRING * @space + @value
-  end
+  private
 
   def choose(_)
     @value

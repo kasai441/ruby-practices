@@ -11,6 +11,8 @@ class Segment::Type
     0
   end
 
+  private
+
   def choose(stat)
     @value = to_char_ftype(stat.ftype)
   end

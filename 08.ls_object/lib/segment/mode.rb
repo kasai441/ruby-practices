@@ -11,6 +11,8 @@ class Segment::Mode
     0
   end
 
+  private
+
   def choose(stat)
     @value = to_char_mode(stat.mode)
   end

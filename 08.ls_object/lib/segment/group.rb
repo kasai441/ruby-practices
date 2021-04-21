@@ -19,6 +19,8 @@ class Segment::Group
     SPACE_STRING * @space + @value
   end
 
+  private
+
   def choose(stat)
     @value = get_group_name(stat.gid)
   end

@@ -16,6 +16,8 @@ class Segment::Nlink
     SPACE_STRING * @space + @value
   end
 
+  private
+
   def choose(stat)
     @value = stat.nlink.to_s
   end
