@@ -15,6 +15,8 @@ class PathStats < Stats
     end
   end
 
+  private
+
   def directory?
     FileTest.directory?(@path)
   end

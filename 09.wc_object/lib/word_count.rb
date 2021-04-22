@@ -2,6 +2,7 @@
 
 require_relative 'stats'
 require_relative 'path_stats'
+require_relative 'total_stats'
 
 class WordCount
   def initialize(input_paths, input_text, params)
@@ -9,7 +10,6 @@ class WordCount
     @input_text = input_text
     @params = params
     @paths = nil
-    @total_values = nil
   end
 
   def display
@@ -20,26 +20,15 @@ class WordCount
       elsif @paths.size == 1
         PathStats.new(@paths.first, **@params).display
       else
+        total_stats = TotalStats.new(**@params)
         @paths.map do |path|
           stats = PathStats.new(path, **@params)
-          add_total(stats.values)
+          total_stats.add(stats.values)
           stats.display
-        end.push(display_total).join("\n")
+        end.push(total_stats.display).join("\n")
       end
     else
       Stats.new(@input_text, **@params).display
     end
-  end
-
-  private
-
-  def add_total(values)
-    return @total_values = values if @total_values.nil?
-
-    @total_values.map!.with_index { |total_value, i| total_value + values[i] }
-  end
-
-  def display_total
-    "#{@total_values.map { |v| v.to_s.rjust(8) }.join} total"
   end
 end
