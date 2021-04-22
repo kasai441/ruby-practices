@@ -21,6 +21,8 @@ class Stats
   private
 
   def value_of(key)
+    return 0 if @text.nil?
+
     case key
     when :lines
       @text.count("\n")

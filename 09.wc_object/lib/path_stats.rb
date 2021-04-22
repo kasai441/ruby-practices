@@ -15,15 +15,7 @@ class PathStats < Stats
     end
   end
 
-  def values
-    if directory?
-      @params.keys.map { |key| 0 if @params[key] }.compact
-    else
-      super
-    end
-  end
-
   def directory?
-    @path && File.stat(@path).ftype == 'directory'
+    FileTest.directory?(@path)
   end
 end
