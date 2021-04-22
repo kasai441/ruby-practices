@@ -3,14 +3,14 @@
 class Stats
   def initialize(text, params)
     @text = text
-    @params = params
+    @params = params # falseのものを除外する
   end
 
-  def val(key)
+  def val(key) # ここの実装にWCの指定がリンクするように
     {
-      "lines": @text.count("\n"),
-      "words": @text.strip.split(/[\s　]+/).count,
-      "bytes": @text.bytesize
+      lines: @text.count("\n"),
+      words: @text.strip.split(/[\s　]+/).count,
+      bytes: @text.bytesize
     }[key]
   end
 
@@ -19,6 +19,6 @@ class Stats
   end
 
   def vals
-    @params.keys.map { |key| val(key) if @params[key] }.compact
+    @params.keys.select { |k| @params[k] }.map { |key| val(key)}
   end
 end

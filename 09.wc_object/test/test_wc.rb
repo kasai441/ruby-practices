@@ -4,7 +4,7 @@
 require 'minitest/autorun'
 require 'pathname'
 
-require_relative '' '../lib/word_count'
+require_relative '../lib/word_count'
 
 class WcDevTest < Minitest::Test
   TARGET_PATHNAME = Pathname('test/fixtures/sample')
