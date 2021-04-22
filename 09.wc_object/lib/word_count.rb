@@ -18,16 +18,16 @@ class WordCount
       if @paths.size.zero?
         "wc: #{@input_paths[0]}: open: No such file or directory"
       elsif @paths.size == 1
-        PathStats.new(@paths.first, @params).display
+        PathStats.new(@paths.first, **@params).display
       else
         @paths.map do |path|
-          stats = PathStats.new(path, @params)
-          add_total(stats.vals)
+          stats = PathStats.new(path, **@params)
+          add_total(stats.values)
           stats.display
         end.push(display_total).join("\n")
       end
     else
-      Stats.new(@input_text, @params).display
+      Stats.new(@input_text, **@params).display
     end
   end
 

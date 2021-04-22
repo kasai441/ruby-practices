@@ -1,24 +1,33 @@
 # frozen_string_literal: true
 
 class Stats
-  def initialize(text, params)
+  def initialize(text, lines: false, words: false, bytes: false)
     @text = text
-    @params = params # falseのものを除外する
-  end
-
-  def val(key) # ここの実装にWCの指定がリンクするように
-    {
-      lines: @text.count("\n"),
-      words: @text.strip.split(/[\s　]+/).count,
-      bytes: @text.bytesize
-    }[key]
+    @params = {
+      lines: lines,
+      words: words,
+      bytes: bytes
+    }.select { |_, v| v }
   end
 
   def display
-    vals.map { |v| v.to_s.rjust(8) }.join
+    values.map { |v| v.to_s.rjust(8) }.join
   end
 
-  def vals
-    @params.keys.select { |k| @params[k] }.map { |key| val(key)}
+  def values
+    @params.keys.map { |key| value_of(key) }
+  end
+
+  private
+
+  def value_of(key)
+    case key
+    when :lines
+      @text.count("\n")
+    when :words
+      @text.strip.split(/[\s　]+/).count
+    when :bytes
+      @text.bytesize
+    end
   end
 end
