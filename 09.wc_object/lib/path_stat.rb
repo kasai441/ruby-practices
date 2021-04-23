@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PathStats < Stats
+class PathStat < WcStat
   def initialize(path, params)
     @path = path
     text = File.read(@path) unless directory?
