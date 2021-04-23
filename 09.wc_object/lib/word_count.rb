@@ -12,7 +12,7 @@ class WordCount
       lines: lines,
       words: words,
       bytes: bytes
-    }
+    }.select { |_k, v| v }
     @paths = nil
   end
 
@@ -27,7 +27,7 @@ class WordCount
         total_stat = TotalStat.new(**@params)
         @paths.map do |path|
           stat = PathStat.new(path, **@params)
-          total_stat.add(stat.values)
+          total_stat.add(stat)
           stat.display
         end.push(total_stat.display).join("\n")
       end

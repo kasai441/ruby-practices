@@ -12,9 +12,9 @@ class TotalStat < WcStat
     "#{super} total"
   end
 
-  def add(input_values)
+  def add(stat)
     @values.size.times do |i|
-      values[i] += input_values[i]
+      values[i] += stat.values[i]
     end
   end
 end

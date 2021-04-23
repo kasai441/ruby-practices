@@ -7,7 +7,7 @@ class WcStat
       lines: lines,
       words: words,
       bytes: bytes
-    }.select { |_, v| v }
+    }.select { |_k, v| v }
   end
 
   def display
