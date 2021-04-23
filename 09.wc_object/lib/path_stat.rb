@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class PathStat < WcStat
-  def initialize(path, params)
+  def initialize(path, lines: false, words: false, bytes: false)
     @path = path
     text = File.read(@path) unless directory?
-    super(text, **params)
+    super(text, { lines: lines, words: words, bytes: bytes })
   end
 
   def display

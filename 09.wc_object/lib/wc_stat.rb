@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WcStat
-  def initialize(text, lines:, words:, bytes:)
+  def initialize(text, lines: false, words: false, bytes: false)
     @text = text
     @params = {
       lines: lines,

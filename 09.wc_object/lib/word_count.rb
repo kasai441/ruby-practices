@@ -5,7 +5,7 @@ require_relative 'path_stat'
 require_relative 'total_stat'
 
 class WordCount
-  def initialize(input_paths, input_text, lines:, words:, bytes:)
+  def initialize(input_paths, input_text, lines: false, words: false, bytes: false)
     @input_paths = input_paths
     @input_text = input_text
     @params = {
@@ -22,11 +22,11 @@ class WordCount
       if @paths.size.zero?
         "wc: #{@input_paths[0]}: open: No such file or directory"
       elsif @paths.size == 1
-        PathStat.new(@paths.first, @params).display
+        PathStat.new(@paths.first, **@params).display
       else
-        total_stat = TotalStat.new(@params)
+        total_stat = TotalStat.new(**@params)
         @paths.map do |path|
-          stat = PathStat.new(path, @params)
+          stat = PathStat.new(path, **@params)
           total_stat.add(stat.values)
           stat.display
         end.push(total_stat.display).join("\n")
