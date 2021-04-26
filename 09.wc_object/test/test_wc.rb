@@ -14,8 +14,8 @@ class WcDevTest < Minitest::Test
       \       8      31     258 test/fixtures/sample/Rakefile
     TEXT
     pathname = TARGET_PATHNAME.join('Rakefile')
-    params = { lines: true, words: true, bytes: true }
-    assert_equal expected, WordCount.new([pathname], nil, **params).display
+    actual = WordCount.new([pathname], nil, lines: true, words: true, bytes: true).display
+    assert_equal expected, actual
   end
 
   def test_pathname_wildcard
@@ -31,8 +31,8 @@ class WcDevTest < Minitest::Test
       \     112     444    3320 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
-    params = { lines: true, words: true, bytes: true }
-    assert_equal expected, WordCount.new([pathname], nil, **params).display
+    actual = WordCount.new([pathname], nil, lines: true, words: true, bytes: true).display
+    assert_equal expected, actual
   end
 
   def test_l
@@ -48,8 +48,8 @@ class WcDevTest < Minitest::Test
       \     112 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
-    params = { lines: true, words: false, bytes: false }
-    assert_equal expected, WordCount.new([pathname], nil, **params).display
+    actual = WordCount.new([pathname], nil, lines: true, words: false, bytes: false).display
+    assert_equal expected, actual
   end
 
   def test_w
@@ -65,8 +65,8 @@ class WcDevTest < Minitest::Test
       \     444 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
-    params = { lines: false, words: true, bytes: false }
-    assert_equal expected, WordCount.new([pathname], nil, **params).display
+    actual = WordCount.new([pathname], nil, lines: false, words: true, bytes: false).display
+    assert_equal expected, actual
   end
 
   def test_c
@@ -82,8 +82,8 @@ class WcDevTest < Minitest::Test
       \    3320 total
     TEXT
     pathname = TARGET_PATHNAME.join('*')
-    params = { lines: false, words: false, bytes: true }
-    assert_equal expected, WordCount.new([pathname], nil, **params).display
+    actual = WordCount.new([pathname], nil, lines: false, words: false, bytes: true).display
+    assert_equal expected, actual
   end
 
   def test_pipe
@@ -91,7 +91,7 @@ class WcDevTest < Minitest::Test
       11      92     575
     TEXT
     input = `ls -la #{TARGET_PATHNAME}`
-    params = { lines: true, words: true, bytes: true }
-    assert_equal expected, WordCount.new(nil, input, **params).display
+    actual = WordCount.new(nil, input, lines: true, words: true, bytes: true).display
+    assert_equal expected, actual
   end
 end
